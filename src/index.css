@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.cs-checkbox {
+  accent-color: #1f3a5c;
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+}
+
+.cs-course-row {
+  transition: background 0.15s ease;
+}
+.cs-course-row:hover {
+  background: #eef1f4;
+}
+
+.cs-btn {
+  transition: opacity 0.15s ease, transform 0.1s ease;
+}
+.cs-btn:hover {
+  opacity: 0.88;
+}
+.cs-btn:active {
+  transform: scale(0.98);
+}
+
+.cs-nav-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
