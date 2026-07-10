@@ -57,7 +57,7 @@ async function main() {
 			if (!code) return;
 
 			subjects[code] = id;
-			console.log(`  ${id} -> ${code}`);
+			console.log(`${id} -> ${code}`);
 		});
 
 		await sleep(DELAY);
