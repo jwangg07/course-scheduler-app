@@ -1,14 +1,14 @@
 {
-  "Combination": 74,
-  "Discussion": 75,
-  "Experiential": 76,
-  "Independent Study": 77,
-  "Laboratory": 78,
-  "Lecture": 79,
-  "Recitation": 80,
-  "Seminar": 81,
-  "Studio": 82,
-  "Thesis": 83,
-  "Tutorial": 84,
-  "Workshop": 85
+  "74": "Combination",
+  "75": "Discussion",
+  "76": "Experiential",
+  "77": "Independent Study",
+  "78": "Laboratory",
+  "79": "Lecture",
+  "80": "Recitation",
+  "81": "Seminar",
+  "82": "Studio",
+  "83": "Thesis",
+  "84": "Tutorial",
+  "85": "Workshop"
 }
