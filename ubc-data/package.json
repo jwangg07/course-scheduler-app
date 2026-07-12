@@ -1,5 +1,5 @@
 {
-  "name": "ubc-course-data",
+  "name": "ubc-course-data-server",
   "private": true,
   "version": "0.0.1",
   "type": "module",
