@@ -1,3 +1,4 @@
+// Defaults for ungenerated / empty schedules
 export default function EmptyState({ tone = "neutral", title, message }) {
   const titleColor = tone === "error" ? "#B5563C" : "#1F3A5C";
   return (
