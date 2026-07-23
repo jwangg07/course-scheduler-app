@@ -1,7 +1,7 @@
 import { colorForIndex } from "../util/palette.js";
 
 // backend location
-const API_BASE = "http://localhost:3001";
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
 // GET /api/terms -> [{ id, name }, ...]
 export async function fetchTerms() {
