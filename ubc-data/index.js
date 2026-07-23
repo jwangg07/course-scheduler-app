@@ -37,5 +37,9 @@ app.get("/api/sections/:dept/:course", async (req, res) => {
     }
 });
 
+app.get("/health-check", (req, res) => {
+    res.sendStatus(200);
+});
+
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`UBC data server running on http://localhost:${PORT}`));
