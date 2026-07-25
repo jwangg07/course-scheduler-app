@@ -1,4 +1,5 @@
 import { useState } from "react";
+import ScheduleSettings from "./ScheduleSettings.jsx"
 
 export default function CourseSidebar({
     terms,
@@ -9,6 +10,8 @@ export default function CourseSidebar({
     onRemoveCourse,
     addStatus,
     onGenerate,
+    settings,
+    onSettingsChange,
 }) {
     const [dept, setDept] = useState("");
     const [courseNumber, setCourseNumber] = useState("");
@@ -126,6 +129,8 @@ export default function CourseSidebar({
             >
                 Generate schedules
             </button>
+
+            <ScheduleSettings settings={settings} onSettingsChange={onSettingsChange} />
         </div>
     );
 }

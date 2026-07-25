@@ -5,6 +5,7 @@ import CourseSidebar from "./ui/CourseSidebar.jsx";
 import ScheduleCalendar from "./ui/ScheduleCalendar.jsx";
 import ScheduleNav from "./ui/ScheduleNav.jsx";
 import EmptyState from "./ui/EmptyState.jsx";
+import { DEFAULT_SETTINGS } from "./ui/ScheduleSettings.jsx";
 
 export default function App() {
     // Terms (loaded once)
@@ -19,6 +20,9 @@ export default function App() {
     // Schedule viewing state
     const [index, setIndex] = useState(0);
     const [generated, setGenerated] = useState(null);
+
+    // Settings that narrow down generated schedules (time window, etc.)
+    const [settings, setSettings] = useState(DEFAULT_SETTINGS);
 
     // empty dependency array
     useEffect(() => {
@@ -63,10 +67,32 @@ export default function App() {
         setIndex(0);
     };
 
+    // Courses with any section outside the allowed hour window stripped out
+    const filteredCourses = useMemo(() => {
+        const startMin = settings.startHour * 60;
+        const endMin = settings.endHour * 60;
+        return courses.map((c) => ({
+            ...c,
+            components: Object.fromEntries(
+                Object.entries(c.components).map(([type, options]) => [
+                    type,
+                    options.filter(
+                        (o) => o.days.length === 0 || (o.start >= startMin && o.end <= endMin)
+                    ),
+                ])
+            ),
+        }));
+    }, [courses, settings]);
+
     const schedules = useMemo(() => {
         if (!generated) return [];
-        return generateSchedules(courses.map((c) => c.code), courses);
-    }, [generated, courses]);
+        return generateSchedules(courses.map((c) => c.code), filteredCourses);
+    }, [generated, filteredCourses, courses]);
+
+    // const schedules = useMemo(() => {
+    //     if (!generated) return [];
+    //     return generateSchedules(courses.map((c) => c.code), courses);
+    // }, [generated, courses]);
 
     const current = schedules[index];
 
@@ -106,6 +132,8 @@ export default function App() {
                 onRemoveCourse={handleRemoveCourse}
                 addStatus={addStatus}
                 onGenerate={() => { setGenerated(true); setIndex(0); }}
+                settings={settings}
+                onSettingsChange={setSettings}
             />
 
             <div style={{ flex: 1, padding: "24px 28px", overflow: "auto" }}>
