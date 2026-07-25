@@ -25,7 +25,7 @@ export default function ScheduleCalendar({ schedule }) {
                         {DAY_LABEL[day]}
                     </div>
                     <div style={{ position: "relative", height: `${(DAY_END - DAY_START) * PX_PER_MIN}px` }}>
-                        {hours.slice(0, -1).map((h) => (
+                        {hours.map((h) => (
                             <div key={h} style={{ position: "absolute", top: `${(h - DAY_START) * PX_PER_MIN}px`, left: 0, right: 0, borderTop: "1px solid #F0F3F5" }} />
                         ))}
 

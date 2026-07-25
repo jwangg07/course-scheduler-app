@@ -61,7 +61,6 @@ async function resolveCourseId(dept, course) {
 export async function getCourseSections(dept, course, termId) {
     const resolvedTermId = termId ?? Object.values(TERMS)[0];
     if (!resolvedTermId) throw new Error("No term specified and data/terms.json is empty");
-    console.log(resolvedTermId);
     const cacheKey = `sections-${dept}-${course}-${resolvedTermId}`;
     const cached = cacheGet(cacheKey);
     if (cached) return cached;
@@ -110,7 +109,6 @@ function parseSections(json, dept, course) {
         };
 
         const componentType = resolveComponentType(section);
-        console.log(componentType);
         if (!sections[componentType]) sections[componentType] = [];
         sections[componentType].push(entry);
     }

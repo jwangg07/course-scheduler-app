@@ -19,5 +19,5 @@ export function fmtTime(mins) {
 
 // The calendar's visible time window and vertical scale
 export const DAY_START = t("08:00");
-export const DAY_END = t("18:00");
+export const DAY_END = t("19:00");
 export const PX_PER_MIN = 1.1;
