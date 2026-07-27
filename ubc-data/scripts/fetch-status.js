@@ -22,7 +22,7 @@ async function main() {
         const type = term.attributes.name;
         const id = term.attributes.drupal_internal__tid;
 
-        status[type] = id;
+        status[id] = type;
         console.log(`${id} -> ${type}`)
     });
 

@@ -1,4 +1,5 @@
 import { DAY_ORDER, DAY_LABEL, DAY_START, DAY_END, PX_PER_MIN, fmtTime } from "../util/time.js";
+import { STATUS_COLORS } from "../util/status.js";
 
 // Displays the schedule
 // schedule = [{courseCode, type, slot, color}]
@@ -53,8 +54,19 @@ export default function ScheduleCalendar({ schedule }) {
                                             color: "#1F2A16",
                                         }}
                                     >
-                                        <div style={{ fontFamily: "'JetBrains Mono', monospace", fontWeight: 600, color: entry.color, fontSize: "10.5px" }}>
-                                            {entry.courseCode}
+                                        <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                                            <span
+                                                style={{
+                                                    width: "6px",
+                                                    height: "6px",
+                                                    borderRadius: "50%",
+                                                    background: STATUS_COLORS[entry.slot.status] ?? STATUS_COLORS.Other,
+                                                    flexShrink: 0,
+                                                }}
+                                            />
+                                            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontWeight: 600, color: entry.color, fontSize: "10.5px" }}>
+                                                {entry.courseCode}
+                                            </div>
                                         </div>
                                         <div style={{ color: "#4A5764", fontSize: "10.5px" }}>{entry.type} {entry.slot.label}</div>
                                     </div>

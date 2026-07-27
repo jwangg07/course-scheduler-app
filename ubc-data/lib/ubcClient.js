@@ -14,6 +14,9 @@ const TERMS = JSON.parse(readFileSync(termsPath, "utf-8"));
 const instructional_methodPath = fileURLToPath(new URL("../data/instructional_method.json", import.meta.url));
 const INSTRUCTIONAL_METHOD = JSON.parse(readFileSync(instructional_methodPath, "utf-8"));
 
+const statusPath = fileURLToPath(new URL("../data/status.json", import.meta.url));
+const STATUS = JSON.parse(readFileSync(statusPath, "utf-8"));
+
 // Drupal's day code conversion
 const DAY_MAP = { m: "M", t: "T", w: "W", th: "R", f: "F" };
 
@@ -106,6 +109,7 @@ function parseSections(json, dept, course) {
             days: (attrs.field_days ?? []).map((d) => DAY_MAP[d] ?? d),
             start: Math.round(attrs.field_start_time / 60), // seconds -> minutes
             end: Math.round(attrs.field_end_time / 60),
+            status: resolveStatus(section),
         };
 
         const componentType = resolveComponentType(section);
@@ -114,6 +118,13 @@ function parseSections(json, dept, course) {
     }
 
     return sections;
+}
+
+function resolveStatus(section) {
+    const id = section.relationships.field_status.data.meta.drupal_internal__target_id;
+    return STATUS[id];
+    console.warn(`Could not resolve status for section ${section.id}, defaulting to open`);
+    return "Open";
 }
 
 // Resolve component type by drupal internal id

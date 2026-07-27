@@ -94,20 +94,51 @@ export default function App() {
     };
 
     // Courses with any section outside the allowed hour window stripped out
-    const filteredCourses = useMemo(() => {
+    // const filteredCourses = useMemo(() => {
+    //     const startMin = settings.startHour * 60;
+    //     const endMin = settings.endHour * 60;
+    //     return courses.map((c) => ({
+    //         ...c,
+    //         components: Object.fromEntries(
+    //             Object.entries(c.components).map(([type, options]) => [
+    //                 type,
+    //                 options.filter((o) => {
+    //                     const withinTime = o.days.length === 0 || (o.start >= startMin && o.end <= endMin);
+    //                     const statusAllowed = !settings.excludedStatuses.includes(o.status);
+    //                     return withinTime && statusAllowed;
+    //                 }),
+    //             ])
+    //         ),
+    //     }));
+    // }, [courses, settings]);
+
+    const { filteredCourses, unavailableComponents } = useMemo(() => {
         const startMin = settings.startHour * 60;
         const endMin = settings.endHour * 60;
-        return courses.map((c) => ({
-            ...c,
-            components: Object.fromEntries(
-                Object.entries(c.components).map(([type, options]) => [
-                    type,
-                    options.filter(
-                        (o) => o.days.length === 0 || (o.start >= startMin && o.end <= endMin)
-                    ),
-                ])
-            ),
-        }));
+        const unavailable = [];
+
+        const filtered = courses.map((c) => {
+            const newComponents = {};
+            for (const [type, options] of Object.entries(c.components)) {
+                // course genuinely doesn't offer this component type — skip it,
+                // same as the old scheduler.js check used to
+                if (options.length === 0) continue;
+
+                const kept = options.filter((o) => {
+                    const withinTime = o.days.length === 0 || (o.start >= startMin && o.end <= endMin);
+                    const statusAllowed = !settings.excludedStatuses.includes(o.status);
+                    return withinTime && statusAllowed;
+                });
+
+                newComponents[type] = kept; // may end up [] — that's meaningful now
+                if (kept.length === 0) {
+                    unavailable.push({ courseCode: c.code, type });
+                }
+            }
+            return { ...c, components: newComponents };
+        });
+
+        return { filteredCourses: filtered, unavailableComponents: unavailable };
     }, [courses, settings]);
 
     const schedules = useMemo(() => {
@@ -170,8 +201,13 @@ export default function App() {
                 {generated && schedules.length === 0 && (
                     <EmptyState
                         tone="error"
-                        title="No conflict-free combination exists"
-                        message="Every section pairing for these courses overlaps somewhere. Try removing a course or swapping one out to see if a valid schedule opens up."
+                        title={unavailableComponents.length > 0 ? "No available schedules" : "No conflict-free combination exists"}
+                        message={
+                            unavailableComponents.length > 0
+                                ? `${unavailableComponents.map((u) => `${u.courseCode} ${u.type}`).join(", ")} ${unavailableComponents.length > 1 ? "have" : "has"
+                                } no sections matching your current filters. Try loosening the time range or status filters.`
+                                : "Every section pairing for these courses overlaps somewhere. Try removing a course or swapping one out to see if a valid schedule opens up."
+                        }
                     />
                 )}
 

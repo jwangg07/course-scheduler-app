@@ -13,20 +13,11 @@ function buildGroups(selectedCodes, courseList) {
         const course = courseList.find((c) => c.code === code);
         for (const [type, options] of Object.entries(course.components)) {
             // filter out options that don't have meeting times
-            const filtered_options = [];
-            for (const option of options) {
-                if (option.days.length !== 0) filtered_options.push(option);
-            }
-            if (options.length > 0) {
-                groups.push({ courseCode: code, type, options: filtered_options, color: course.color });
-            }
+            const filtered_options = options.filter((option) => option.days.length !== 0);
+
+            groups.push({ courseCode: code, type, options: filtered_options, color: course.color });
         }
     }
-    console.log(groups.map(g => ({
-        course: g.courseCode,
-        type: g.type,
-        count: g.options.length
-    })));
     return groups;
 }
 

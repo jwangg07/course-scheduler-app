@@ -1,4 +1,5 @@
 import { DAY_START, DAY_END, fmtTime } from "../util/time.js";
+import { FILTER_STATUSES, STATUS_COLORS } from "../util/status.js";
 
 // Hour options between the calendar's visible window
 const HOUR_OPTIONS = [];
@@ -7,6 +8,7 @@ for (let h = DAY_START / 60; h <= DAY_END / 60; h++) HOUR_OPTIONS.push(h);
 export const DEFAULT_SETTINGS = {
     startHour: DAY_START / 60,
     endHour: DAY_END / 60,
+    excludedStatuses: [],
 };
 
 // narrow down how many schedules get generated.
@@ -27,6 +29,18 @@ export default function ScheduleSettings({ settings, onSettingsChange }) {
             endHour,
             startHour: Math.min(prev.startHour, endHour - 1),
         }));
+    };
+
+    const handleStatusToggle = (status) => {
+        onSettingsChange((prev) => {
+            const isExcluded = prev.excludedStatuses.includes(status);
+            return {
+                ...prev,
+                excludedStatuses: isExcluded
+                    ? prev.excludedStatuses.filter((s) => s !== status)
+                    : [...prev.excludedStatuses, status],
+            };
+        });
     };
 
     return (
@@ -60,6 +74,28 @@ export default function ScheduleSettings({ settings, onSettingsChange }) {
                         <option key={h} value={h}>{fmtTime(h * 60)}</option>
                     ))}
                 </select>
+            </div>
+
+            {/* --- status filter --- */}
+            <div style={{ fontSize: "12.5px", color: "#EDF1F5", marginTop: "18px", marginBottom: "8px" }}>
+                Remove sections with status:
+            </div>
+            <div style={{ display: "flex", flexDirection: "row", gap: "2rem" }}>
+                {FILTER_STATUSES.map((status) => (
+                    <label
+                        key={status}
+                        style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "12.5px", color: "#EDF1F5", cursor: "pointer" }}
+                    >
+                        <input
+                            type="checkbox"
+                            className="cs-checkbox"
+                            checked={settings.excludedStatuses.includes(status)}
+                            onChange={() => handleStatusToggle(status)}
+                        />
+                        <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: STATUS_COLORS[status], display: "inline-block", flexShrink: 0 }} />
+                        {status}
+                    </label>
+                ))}
             </div>
         </div>
     );
