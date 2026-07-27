@@ -2,6 +2,8 @@ import { useState } from "react";
 import ScheduleSettings from "./ScheduleSettings.jsx"
 
 export default function CourseSidebar({
+    campus,
+    onCampusChange,
     terms,
     selectedTermId,
     onTermChange,
@@ -15,6 +17,7 @@ export default function CourseSidebar({
 }) {
     const [dept, setDept] = useState("");
     const [courseNumber, setCourseNumber] = useState("");
+    const [term, setTerm] = useState("");
 
     const handleAdd = (e) => {
         e.preventDefault(); // stop the browser's default "reload the page" form behavior
@@ -33,18 +36,35 @@ export default function CourseSidebar({
                 Live UBC section data
             </div>
 
+            {/* Campus Picker */}
+            <div style={{ fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.06em", color: "#9FB3C8", marginBottom: "6px" }}>
+                Campus
+            </div>
+            <select
+                className="cs-select"
+                value={campus}
+                onChange={(e) => onCampusChange(e.target.value)}
+                style={{ width: "100%", marginBottom: "20px", padding: "8px 10px", borderRadius: "8px", border: "1px solid #3E5872", background: "#26466B", color: "#EDF1F5", fontSize: "13px" }}
+            >
+                <option>Vancouver</option>
+                <option>Okanagan</option>
+            </select>
+
             {/* Term Picker*/}
             <div style={{ fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.06em", color: "#9FB3C8", marginBottom: "6px" }}>
                 Term
             </div>
             <select
                 className="cs-select"
-                value={selectedTermId ?? ""}
-                onChange={(e) => onTermChange(Number(e.target.value))}
+                value={term ?? ""}
+                onChange={(e) => {
+                    setTerm(e.target.value);
+                    onTermChange(e.target.value)}
+                } 
                 style={{ width: "100%", marginBottom: "20px", padding: "8px 10px", borderRadius: "8px", border: "1px solid #3E5872", background: "#26466B", color: "#EDF1F5", fontSize: "13px" }}
             >
                 {terms.map((t) => (
-                    <option key={t.id} value={t.id}>{t.name}</option>
+                    <option key={t} value={t}>{t}</option> 
                 ))}
             </select>
 
@@ -56,7 +76,7 @@ export default function CourseSidebar({
                 <input
                     value={dept}
                     onChange={(e) => setDept(e.target.value)}
-                    placeholder="CPSC_V"
+                    placeholder="CPSC"
                     style={{ width: "70px", padding: "8px 10px", borderRadius: "8px", border: "1px solid #3E5872", background: "#26466B", color: "#EDF1F5", fontSize: "13px", fontFamily: "'JetBrains Mono', monospace" }}
                 />
                 <input

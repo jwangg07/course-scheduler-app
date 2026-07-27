@@ -8,9 +8,13 @@ import EmptyState from "./ui/EmptyState.jsx";
 import { DEFAULT_SETTINGS } from "./ui/ScheduleSettings.jsx";
 
 export default function App() {
+    // Campus
+    const [campus, setCampus] = useState("Vancouver");
+
     // Terms (loaded once)
     const [terms, setTerms] = useState([]);
     const [selectedTermId, setSelectedTermId] = useState(null);
+    const [currentTermName, setCurrentTermName] = useState(null);
     const [termsError, setTermsError] = useState(null);
 
     // Added courses built up by fetchCourse() calls
@@ -29,12 +33,33 @@ export default function App() {
         fetchTerms()
             .then((list) => {
                 setTerms(list);
-                if (list.length > 0) setSelectedTermId(list[0].id);
+                if (list.length > 0) {
+                    setSelectedTermId(list[0].id);
+                    setCurrentTermName(
+                        list[0].name.replace(/\s*\(UBC-[VO]\)$/, "")
+                    );
+                }
             })
             .catch((err) => setTermsError(err.message));
     }, []);
 
-    const handleTermChange = (termId) => {
+    const displayTerms = [
+        ...new Set(
+            terms.map(term =>
+                term.name.replace(/\s*\(UBC-[VO]\)$/, "")
+            )
+        )
+    ];
+
+    const handleCampusChange = (campus) => {
+        setCampus(campus);
+        handleTermChange(currentTermName, campus);
+    }
+
+    const handleTermChange = (termName, campusName = campus) => { // termName: 2025-26 Winter Term 1
+        setCurrentTermName(termName);
+        campusName === "Vancouver" ? termName = `${termName} (UBC-V)` : termName = `${termName} (UBC-O)`;
+        const termId = terms.find(term => term.name === termName).id;
         setSelectedTermId(termId);
         setCourses([]);
         setGenerated(null);
@@ -43,6 +68,7 @@ export default function App() {
     };
 
     const handleAddCourse = async (dept, courseNumber) => {
+        campus === "Vancouver" ? dept = (`${dept}_V`) : dept = (`${dept}_O`);
         const code = `${dept} ${courseNumber}`;
         if (courses.some((c) => c.code === code)) {
             setAddStatus({ loading: false, error: `${code} is already added.` });
@@ -89,11 +115,6 @@ export default function App() {
         return generateSchedules(courses.map((c) => c.code), filteredCourses);
     }, [generated, filteredCourses, courses]);
 
-    // const schedules = useMemo(() => {
-    //     if (!generated) return [];
-    //     return generateSchedules(courses.map((c) => c.code), courses);
-    // }, [generated, courses]);
-
     const current = schedules[index];
 
     if (termsError) {
@@ -124,7 +145,9 @@ export default function App() {
             border: "1px solid #DCE2E7",
         }}>
             <CourseSidebar
-                terms={terms}
+                campus={campus}
+                onCampusChange={handleCampusChange}
+                terms={displayTerms}
                 selectedTermId={selectedTermId}
                 onTermChange={handleTermChange}
                 courses={courses}
