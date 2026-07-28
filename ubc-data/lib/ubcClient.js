@@ -34,32 +34,6 @@ function resolveSubjectId(dept) {
     return id;
 }
 
-// (subject ID, course number) -> course UUID
-async function resolveCourseId(dept, course) {
-    const cacheKey = `course-id-${dept}-${course}`;
-    const cached = cacheGet(cacheKey);
-    if (cached) return cached;
-
-    const subjectId = resolveSubjectId(dept);
-
-    const url =
-        `${BASE}/node/course` +
-        `?filter[field_subject.meta.drupal_internal__target_id]=${subjectId}` +
-        `&filter[field_course_number]=${encodeURIComponent(course)}`;
-
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`Course lookup failed: ${res.status}`);
-    const json = await res.json();
-
-    if (!json.data || json.data.length === 0) {
-        throw new Error(`No course found for ${dept} ${course}`);
-    }
-
-    const courseId = json.data[0].id;
-    cacheSet(cacheKey, courseId, 7 * 24 * 60 * 60 * 1000); // course UUIDs are effectively permanent
-    return courseId;
-}
-
 // fetch sections for a resolved course + term
 export async function getCourseSections(dept, course, termId) {
     const resolvedTermId = termId ?? Object.values(TERMS)[0];
@@ -68,12 +42,13 @@ export async function getCourseSections(dept, course, termId) {
     const cached = cacheGet(cacheKey);
     if (cached) return cached;
 
-    const courseId = await resolveCourseId(dept, course);
+    const subjectId = resolveSubjectId(dept);
 
     const url =
         `${BASE}/node/section` +
         `?fields[node--section]=title,field_section_number,field_start_time,field_end_time,field_days,field_instructional_method,field_status` +
-        `&filter[field_course.id]=${courseId}` +
+        `&filter[field_course.field_subject.meta.drupal_internal__target_id]=${subjectId}` +
+        `&filter[field_course.field_course_number]=${encodeURIComponent(course)}` +
         `&filter[field_is_visible]=1` +
         `&filter[field_academic_term.meta.drupal_internal__target_id]=${resolvedTermId}` +
         `&sort=field_section_number`;
