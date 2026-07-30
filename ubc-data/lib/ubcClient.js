@@ -95,26 +95,12 @@ function parseSections(json, dept, course) {
     return sections;
 }
 
+// Resolve status type by drupal internal id
 function resolveStatus(section) {
-    const id = section.relationships.field_status.data.meta.drupal_internal__target_id;
-    return STATUS[id];
-    console.warn(`Could not resolve status for section ${section.id}, defaulting to open`);
-    return "Open";
+    return STATUS[section.relationships.field_status.data.meta.drupal_internal__target_id];
 }
 
 // Resolve component type by drupal internal id
 function resolveComponentType(section) {
-    return normalizeComponentLabel(INSTRUCTIONAL_METHOD[section.relationships.field_instructional_method.data.meta.drupal_internal__target_id]);
-
-    console.warn(`Could not resolve instructional method for section ${section.id}, defaulting to LEC`);
-    return "LEC";
-}
-
-// Format label to displayed label
-function normalizeComponentLabel(label) {
-    const normalized = label.toLowerCase();
-    if (label === "Laboratory") return "LAB";
-    if (label === "Discussion") return "TUT";
-    return "LEC";
-    // TODO: Add rest of component lables
+    return INSTRUCTIONAL_METHOD[section.relationships.field_instructional_method.data.meta.drupal_internal__target_id];
 }
