@@ -8,27 +8,18 @@ import EmptyState from "./ui/EmptyState.jsx";
 import { DEFAULT_SETTINGS } from "./ui/ScheduleSettings.jsx";
 
 export default function App() {
-    // Campus
     const [campus, setCampus] = useState("Vancouver");
-
-    // Terms (loaded once)
     const [terms, setTerms] = useState([]);
     const [selectedTermId, setSelectedTermId] = useState(null);
     const [currentTermName, setCurrentTermName] = useState(null);
     const [termsError, setTermsError] = useState(null);
-
-    // Added courses built up by fetchCourse() calls
     const [courses, setCourses] = useState([]);
     const [addStatus, setAddStatus] = useState({ loading: false, error: null });
-
-    // Schedule viewing state
-    const [index, setIndex] = useState(0);
+    const [index, setIndex] = useState(0); // schedule view state
     const [generated, setGenerated] = useState(null);
-
-    // Settings that narrow down generated schedules (time window, etc.)
     const [settings, setSettings] = useState(DEFAULT_SETTINGS);
+    const [sectionSelections, setSectionSelections] = useState({}); // locked sections
 
-    // empty dependency array
     useEffect(() => {
         fetchTerms()
             .then((list) => {
@@ -62,6 +53,7 @@ export default function App() {
         const termId = terms.find(term => term.name === termName).id;
         setSelectedTermId(termId);
         setCourses([]);
+        setSectionSelections({});
         setGenerated(null);
         setIndex(0);
         setAddStatus({ loading: false, error: null });
@@ -89,28 +81,46 @@ export default function App() {
 
     const handleRemoveCourse = (code) => {
         setCourses((prev) => prev.filter((c) => c.code !== code));
+        setSectionSelections((prev) => { // Drop course's section overrides too
+            const { [code]: _removed, ...rest } = prev;
+            return rest;
+        });
         setGenerated(null);
         setIndex(0);
     };
 
-    // Courses with any section outside the allowed hour window stripped out
-    // const filteredCourses = useMemo(() => {
-    //     const startMin = settings.startHour * 60;
-    //     const endMin = settings.endHour * 60;
-    //     return courses.map((c) => ({
-    //         ...c,
-    //         components: Object.fromEntries(
-    //             Object.entries(c.components).map(([type, options]) => [
-    //                 type,
-    //                 options.filter((o) => {
-    //                     const withinTime = o.days.length === 0 || (o.start >= startMin && o.end <= endMin);
-    //                     const statusAllowed = !settings.excludedStatuses.includes(o.status);
-    //                     return withinTime && statusAllowed;
-    //                 }),
-    //             ])
-    //         ),
-    //     }));
-    // }, [courses, settings]);
+    // Toggle one specific section on/off for a course/type
+    const handleToggleSection = (courseCode, type, sectionId) => {
+        setSectionSelections((prev) => {
+            const course = courses.find((c) => c.code === courseCode);
+            const courseSel = prev[courseCode] ?? {};
+            // If we haven't touched this type before, start from "everything
+            // allowed" (i.e. every id currently offered for that type)
+            const currentIds = courseSel[type] ?? new Set(course.components[type].map((o) => o.id));
+            const nextIds = new Set(currentIds);
+            if (nextIds.has(sectionId)) nextIds.delete(sectionId);
+            else nextIds.add(sectionId);
+            return { ...prev, [courseCode]: { ...courseSel, [type]: nextIds } };
+        });
+    };
+
+    // "All" button — clear the override entirely so it goes back to
+    // "everything allowed" rather than storing a full set of every id
+    const handleSelectAllSections = (courseCode, type) => {
+        setSectionSelections((prev) => {
+            const courseSel = prev[courseCode] ?? {};
+            const { [type]: _removed, ...rest } = courseSel;
+            return { ...prev, [courseCode]: rest };
+        });
+    };
+
+    // "None" button — an empty Set means zero sections of this type allowed
+    const handleSelectNoSections = (courseCode, type) => {
+        setSectionSelections((prev) => {
+            const courseSel = prev[courseCode] ?? {};
+            return { ...prev, [courseCode]: { ...courseSel, [type]: new Set() } };
+        });
+    };
 
     const { filteredCourses, unavailableComponents } = useMemo(() => {
         const startMin = settings.startHour * 60;
@@ -118,6 +128,7 @@ export default function App() {
         const unavailable = [];
 
         const filtered = courses.map((c) => {
+            const sel = sectionSelections[c.code]; // this course's overrides, if any
             const newComponents = {};
             for (const [type, options] of Object.entries(c.components)) {
                 // course genuinely doesn't offer this component type — skip it,
@@ -127,7 +138,9 @@ export default function App() {
                 const kept = options.filter((o) => {
                     const withinTime = o.days.length === 0 || (o.start >= startMin && o.end <= endMin);
                     const statusAllowed = !settings.excludedStatuses.includes(o.status);
-                    return withinTime && statusAllowed;
+                    // No entry for this type => user hasn't restricted it => allow all
+                    const sectionAllowed = !sel?.[type] || sel[type].has(o.id);
+                    return withinTime && statusAllowed && sectionAllowed;
                 });
 
                 newComponents[type] = kept; // may end up [] — that's meaningful now
@@ -139,7 +152,7 @@ export default function App() {
         });
 
         return { filteredCourses: filtered, unavailableComponents: unavailable };
-    }, [courses, settings]);
+    }, [courses, settings, sectionSelections]);
 
     const schedules = useMemo(() => {
         if (!generated) return [];
@@ -188,6 +201,10 @@ export default function App() {
                 onGenerate={() => { setGenerated(true); setIndex(0); }}
                 settings={settings}
                 onSettingsChange={setSettings}
+                sectionSelections={sectionSelections}
+                onToggleSection={handleToggleSection}
+                onSelectAllSections={handleSelectAllSections}
+                onSelectNoSections={handleSelectNoSections}
             />
 
             <div style={{ flex: 1, padding: "24px 28px", overflow: "auto" }}>
@@ -205,7 +222,7 @@ export default function App() {
                         message={
                             unavailableComponents.length > 0
                                 ? `${unavailableComponents.map((u) => `${u.courseCode} ${u.type}`).join(", ")} ${unavailableComponents.length > 1 ? "have" : "has"
-                                } no sections matching your current filters. Try loosening the time range or status filters.`
+                                } no sections matching your current filters. Try loosening the time range, status, or section filters.`
                                 : "Every section pairing for these courses overlaps somewhere. Try removing a course or swapping one out to see if a valid schedule opens up."
                         }
                     />

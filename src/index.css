@@ -16,12 +16,12 @@ body {
   cursor: pointer;
 }
 
-.cs-course-row {
+/* .cs-course-row {
   transition: background 0.15s ease;
 }
 .cs-course-row:hover {
   background: #eef1f4;
-}
+} */
 
 .cs-btn {
   transition: opacity 0.15s ease, transform 0.1s ease;
@@ -36,4 +36,38 @@ body {
 .cs-nav-btn:disabled {
   opacity: 0.35;
   cursor: not-allowed;
+}
+
+.cs-course-row {
+  position: relative;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.cs-course-row:hover {
+  background: #eef1f4;
+}
+
+.cs-course-info {
+  transition: opacity 0.12s ease;
+}
+.cs-course-row:hover .cs-course-info {
+  opacity: 0;
+}
+
+.cs-select-hint {
+  position: absolute;
+  left: 8px;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #C99A3E;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+  pointer-events: none; /* so it never intercepts the row's own click */
+}
+.cs-course-row:hover .cs-select-hint {
+  opacity: 1;
 }

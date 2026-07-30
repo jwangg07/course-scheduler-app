@@ -1,5 +1,6 @@
 import { useState } from "react";
 import ScheduleSettings from "./ScheduleSettings.jsx"
+import SectionPicker from "./SectionPicker.jsx"
 
 export default function CourseSidebar({
     campus,
@@ -14,10 +15,17 @@ export default function CourseSidebar({
     onGenerate,
     settings,
     onSettingsChange,
+    sectionSelections,
+    onToggleSection,
+    onSelectAllSections,
+    onSelectNoSections,
 }) {
     const [dept, setDept] = useState("");
     const [courseNumber, setCourseNumber] = useState("");
     const [term, setTerm] = useState("");
+
+    // Which course's section-picker popover is currently open (by code), or null
+    const [openPickerFor, setOpenPickerFor] = useState(null);
 
     const handleAdd = (e) => {
         e.preventDefault(); // stop the browser's default "reload the page" form behavior
@@ -111,25 +119,48 @@ export default function CourseSidebar({
                     <div
                         key={c.code}
                         className="cs-course-row"
-                        style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "9px 8px", borderRadius: "8px", marginBottom: "2px" }}
+                        onClick={() => setOpenPickerFor(c.code)}
+                        style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "9px 8px", borderRadius: "8px", marginBottom: "2px" }}
                     >
-                        <div style={{ display: "flex", alignItems: "center", gap: "7px", minWidth: 0 }}>
+                        {/* Fades out on hover so "Select sections" can fade in over it */}
+                        <div className="cs-course-info" style={{ display: "flex", alignItems: "center", gap: "7px", minWidth: 0 }}>
                             <span style={{ width: "9px", height: "9px", borderRadius: "3px", background: c.color, display: "inline-block", flexShrink: 0 }} />
                             <div style={{ minWidth: 0 }}>
                                 <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "13px", fontWeight: 500 }}>{c.code}</div>
                                 <div style={{ fontSize: "11.5px", color: "#B9C8D6", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.title}</div>
                             </div>
                         </div>
+
+                        {/* Hidden until hover; see the .cs-select-hint rule in index.css */}
+                        <div className="cs-select-hint">Select sections →</div>
+
                         <button
-                            onClick={() => onRemoveCourse(c.code)}
+                            onClick={(e) => {
+                                // Stop the click from bubbling up to the row's
+                                // onClick — otherwise removing a course would
+                                // ALSO open the section picker for it
+                                e.stopPropagation();
+                                onRemoveCourse(c.code);
+                            }}
                             aria-label={`Remove ${c.code}`}
-                            style={{ background: "none", border: "none", color: "#9FB3C8", cursor: "pointer", fontSize: "16px", lineHeight: 1, padding: "4px" }}
+                            style={{ background: "none", border: "none", color: "#9FB3C8", cursor: "pointer", fontSize: "16px", lineHeight: 1, padding: "4px", position: "relative", zIndex: 1 }}
                         >
                             ×
                         </button>
                     </div>
                 ))}
             </div>
+
+            {openPickerFor && (
+                <SectionPicker
+                    course={courses.find((c) => c.code === openPickerFor)}
+                    selection={sectionSelections[openPickerFor] ?? {}}
+                    onToggle={(type, sectionId) => onToggleSection(openPickerFor, type, sectionId)}
+                    onSelectAll={(type) => onSelectAllSections(openPickerFor, type)}
+                    onSelectNone={(type) => onSelectNoSections(openPickerFor, type)}
+                    onClose={() => setOpenPickerFor(null)}
+                />
+            )}
 
             <button
                 className="cs-btn"
