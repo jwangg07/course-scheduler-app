@@ -54,7 +54,11 @@ export default function ScheduleCalendar({ schedule }) {
                                             color: "#1F2A16",
                                         }}
                                     >
-                                        <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                                        <div style={{ fontFamily: "'JetBrains Mono', monospace", fontWeight: 600, color: entry.color, fontSize: "10.5px" }}>
+                                            {entry.courseCode}
+                                        </div>
+                                        <div style={{ color: "#4A5764", fontSize: "10.5px" }}>{entry.type} {entry.slot.label}</div>
+                                        <div style={{ display: "inline-flex", alignItems: "center", gap: "5px", background: "#FAFAFA", marginTop: "3px", padding: "2px 5px 2px 5px", borderRadius: "10px"}}>
                                             <span
                                                 style={{
                                                     width: "6px",
@@ -64,11 +68,10 @@ export default function ScheduleCalendar({ schedule }) {
                                                     flexShrink: 0,
                                                 }}
                                             />
-                                            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontWeight: 600, color: entry.color, fontSize: "10.5px" }}>
-                                                {entry.courseCode}
+                                            <div style={{ fontFamily: "'JetBrains Mono', monospace", color: entry.color, fontSize: "10.5px" }}>
+                                                {entry.slot.status}
                                             </div>
                                         </div>
-                                        <div style={{ color: "#4A5764", fontSize: "10.5px" }}>{entry.type} {entry.slot.label}</div>
                                     </div>
                                 );
                             })}

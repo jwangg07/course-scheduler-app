@@ -148,6 +148,7 @@ export default function App() {
                     unavailable.push({ courseCode: c.code, type });
                 }
             }
+            setIndex(0);
             return { ...c, components: newComponents };
         });
 
