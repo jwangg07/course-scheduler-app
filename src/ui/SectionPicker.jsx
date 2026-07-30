@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { fmtTime } from "../util/time.js";
+import { STATUS_COLORS } from "../util/status.js";
 
 // Full-screen backdrop + centered modal 
 // Clicking the backdrop closes it; clicking inside the card does not, thanks
@@ -104,7 +105,7 @@ export default function SectionPicker({ course, selection = {}, onToggle, onSele
                                     return (
                                         <label
                                             key={opt.id}
-                                            style={{ display: "flex", alignItems: "center", gap: "9px", fontSize: "13px", padding: "6px 4px", cursor: "pointer", borderRadius: "6px" }}
+                                            style={{ display: "flex", alignItems: "center", gap: "9px", fontSize: "13px", padding: "6px 4px", cursor: "pointer", borderRadius: "6px", background: STATUS_COLORS[opt.status] + "1e" }}
                                         >
                                             <input
                                                 type="checkbox"
@@ -112,9 +113,13 @@ export default function SectionPicker({ course, selection = {}, onToggle, onSele
                                                 checked={checked}
                                                 onChange={() => onToggle(type, opt.id)}
                                             />
-                                            <div style={{ minWidth: 0 }}>
-                                                <div style={{ fontFamily: "'JetBrains Mono', monospace" }}>{opt.label}</div>
-                                                <div style={{ color: "#5A6B7A", fontSize: "11.5px" }}>{timeLabel}</div>
+                                            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flex: "1"}}>
+
+                                                <div style={{ minWidth: 0 }}>
+                                                    <div>{opt.label}</div>
+                                                    <div style={{ color: "#5A6B7A", fontSize: "11.5px" }}>{timeLabel}</div>
+                                                </div>
+                                                <div style={{ marginRight: "10px" }}>{opt.status}</div>
                                             </div>
                                         </label>
                                     );
