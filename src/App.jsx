@@ -6,6 +6,7 @@ import ScheduleCalendar from "./ui/ScheduleCalendar.jsx";
 import ScheduleNav from "./ui/ScheduleNav.jsx";
 import EmptyState from "./ui/EmptyState.jsx";
 import { DEFAULT_SETTINGS } from "./ui/ScheduleSettings.jsx";
+import SkeletonLoader from "./ui/SkeletonLoader.jsx";
 
 export default function App() {
     const [campus, setCampus] = useState("Vancouver");
@@ -171,11 +172,7 @@ export default function App() {
     }
 
     if (terms.length === 0) {
-        return (
-            <div style={{ padding: "24px", color: "#5A6B7A", fontFamily: "'Inter', system-ui, sans-serif" }}>
-                Loading terms…
-            </div>
-        );
+        return <SkeletonLoader />;
     }
 
     return (

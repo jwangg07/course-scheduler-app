@@ -71,3 +71,25 @@ body {
 .cs-course-row:hover .cs-select-hint {
   opacity: 1;
 }
+
+/* Skeleton blocks */
+@keyframes skeleton-shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+/* Light skeleton (main area) */
+.skeleton {
+  background: linear-gradient(90deg, #E5E9EC 25%, #EEF1F4 37%, #E5E9EC 63%);
+  background-size: 400px 100%;
+  animation: skeleton-shimmer 2.5s ease-in-out infinite;
+  border-radius: 6px;
+}
+
+/* Dark skeleton (sidebar) */
+.skeleton-dark {
+  background: linear-gradient(90deg, #2A4A6E 25%, #365B85 37%, #2A4A6E 63%);
+  background-size: 400px 100%;
+  animation: skeleton-shimmer 2.5s ease-in-out infinite;
+  border-radius: 6px;
+}
