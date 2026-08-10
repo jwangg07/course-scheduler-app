@@ -23,18 +23,23 @@ export default function CourseSidebar({
     const [dept, setDept] = useState("");
     const [courseNumber, setCourseNumber] = useState("");
     const [term, setTerm] = useState("");
+    const [termError, setTermError] = useState(null);
 
     // Which course's section-picker popover is currently open (by code), or null
     const [openPickerFor, setOpenPickerFor] = useState(null);
 
     const handleAdd = (e) => {
-        e.preventDefault(); // stop the browser's default "reload the page" form behavior
+        e.preventDefault();
+        if (!term) {
+            setTermError("Please select a term before adding a course.");
+            return;
+        }
+        setTermError(null);
         if (!dept.trim() || !courseNumber.trim()) return;
         onAddCourse(dept.trim().toUpperCase(), courseNumber.trim());
         setDept("");
         setCourseNumber("");
     };
-
     return (
         <div style={{ width: "450px", background: "#1F3A5C", color: "#EDF1F5", padding: "24px 20px", flexShrink: 0 }}>
             <div style={{ fontFamily: "'Fraunces', serif", fontSize: "20px", fontWeight: 600, letterSpacing: "0.2px" }}>
@@ -67,12 +72,23 @@ export default function CourseSidebar({
                 value={term ?? ""}
                 onChange={(e) => {
                     setTerm(e.target.value);
-                    onTermChange(e.target.value)}
-                } 
-                style={{ width: "100%", marginBottom: "20px", padding: "8px 10px", borderRadius: "8px", border: "1px solid #3E5872", background: "#26466B", color: "#EDF1F5", fontSize: "13px" }}
+                    setTermError(null); // clear any "please select a term" error once they pick one
+                    onTermChange(e.target.value);
+                }}
+                style={{
+                    width: "100%",
+                    marginBottom: "20px",
+                    padding: "8px 10px",
+                    borderRadius: "8px",
+                    border: "1px solid #3E5872",
+                    background: "#26466B",
+                    color: term ? "#EDF1F5" : "#9FB3C8", // grayed out until a real term is picked
+                    fontSize: "13px",
+                }}
             >
+                <option value="" disabled>Select a term</option>
                 {terms.map((t) => (
-                    <option key={t} value={t}>{t}</option> 
+                    <option key={t} value={t}>{t}</option>
                 ))}
             </select>
 
@@ -102,9 +118,9 @@ export default function CourseSidebar({
                     {addStatus.loading ? "…" : "Add"}
                 </button>
             </form>
-            {addStatus.error && (
+            {(termError || addStatus.error) && (
                 <div style={{ fontSize: "12px", color: "#E8A398", marginBottom: "10px", lineHeight: 1.4 }}>
-                    {addStatus.error}
+                    {termError || addStatus.error}
                 </div>
             )}
 

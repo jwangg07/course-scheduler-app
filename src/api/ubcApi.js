@@ -5,6 +5,7 @@ const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
 // GET /api/terms -> [{ id, name }, ...]
 export async function fetchTerms() {
+    await new Promise((r) => setTimeout(r, 5000)); // TEMP: simulate slow load
     const res = await fetch(`${API_BASE}/api/terms`);
     if (!res.ok) throw new Error(`Failed to load terms: ${res.status}`);
     const json = await res.json();

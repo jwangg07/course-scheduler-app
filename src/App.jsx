@@ -230,7 +230,7 @@ export default function App() {
                     <>
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "6px" }}>
                             <div style={{ fontFamily: "'Fraunces', serif", fontSize: "19px", color: "#1F3A5C" }}>
-                                {schedules.length} valid schedule{schedules.length > 1 ? "s" : ""} found
+                                {schedules.length === 100 ? "99+" : schedules.length} valid schedule{schedules.length > 1 ? "s" : ""} found
                             </div>
                             <ScheduleNav
                                 index={index}
@@ -240,12 +240,7 @@ export default function App() {
                             />
                         </div>
 
-                        <div style={{ fontSize: "12.5px", color: "#5A6B7A", marginBottom: "14px" }}>
-                            Sections are chosen automatically to avoid conflicts — if two of your courses only
-                            overlap in one section, the engine may use a different section than you expected.
-                        </div>
-
-                        <ScheduleCalendar schedule={current} />
+                        <ScheduleCalendar schedule={current} settings={settings} />
                     </>
                 )}
             </div>

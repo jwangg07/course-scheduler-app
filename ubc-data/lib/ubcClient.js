@@ -29,7 +29,7 @@ export function getAvailableTerms() {
 function resolveSubjectId(dept) {
     const id = SUBJECTS[dept];
     if (!id) {
-        throw new Error(`Unknown subject code "${dept}" — run scripts/fetch-subjects.js if data/subjects.json is empty or missing this one`);
+        throw new Error(`Unknown subject code "${dept}".`); // run scripts/fetch-subjects.js if data/subjects.json is empty or missing this one
     }
     return id;
 }
@@ -37,7 +37,7 @@ function resolveSubjectId(dept) {
 // fetch sections for a resolved course + term
 export async function getCourseSections(dept, course, termId) {
     const resolvedTermId = termId ?? Object.values(TERMS)[0];
-    if (!resolvedTermId) throw new Error("No term specified and data/terms.json is empty");
+    if (!resolvedTermId) throw new Error("No term specified"); // data/terms.json empty
     const cacheKey = `sections-${dept}-${course}-${resolvedTermId}`;
     const cached = cacheGet(cacheKey);
     if (cached) return cached;

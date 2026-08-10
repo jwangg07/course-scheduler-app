@@ -3,7 +3,7 @@ import { STATUS_COLORS } from "../util/status.js";
 
 // Displays the schedule
 // schedule = [{courseCode, type, slot, color}]
-export default function ScheduleCalendar({ schedule }) {
+export default function ScheduleCalendar({ schedule, settings }) {
     const hours = [];
     for (let m = DAY_START; m <= DAY_END; m += 60) hours.push(m);
 
@@ -29,7 +29,23 @@ export default function ScheduleCalendar({ schedule }) {
                         {hours.map((h) => (
                             <div key={h} style={{ position: "absolute", top: `${(h - DAY_START) * PX_PER_MIN}px`, left: 0, right: 0, borderTop: "1px solid #F0F3F5" }} />
                         ))}
-
+                        {/* Beginning and End of day markers (custom time ranges) */}
+                        <span style={{
+                            position: "absolute",
+                            top: `${(settings["startHour"] * 60 - DAY_START) * PX_PER_MIN - 1}px`,
+                            height: "1px",
+                            left: "0px",
+                            right: "0px",
+                            background: "#C99A3EAA"
+                        }} />
+                        <span style={{
+                            position: "absolute",
+                            top: `${((settings["endHour"]) * 60 - DAY_START) * PX_PER_MIN + 1}px`,
+                            height: "1px",
+                            left: "0px",
+                            right: "0px",
+                            background: "#C99A3EAA"
+                        }} />
                         {schedule
                             .filter((entry) => entry.slot.days.includes(day))
                             .map((entry, i) => {
@@ -58,7 +74,7 @@ export default function ScheduleCalendar({ schedule }) {
                                             {entry.courseCode}
                                         </div>
                                         <div style={{ color: "#4A5764", fontSize: "10.5px" }}>{entry.type} {entry.slot.label}</div>
-                                        <div style={{ display: "inline-flex", alignItems: "center", gap: "5px", background: "#FAFAFA", marginTop: "3px", padding: "2px 5px 2px 5px", borderRadius: "10px"}}>
+                                        <div style={{ display: "inline-flex", alignItems: "center", gap: "5px", background: "#FAFAFA", marginTop: "3px", padding: "2px 5px 2px 5px", borderRadius: "10px" }}>
                                             <span
                                                 style={{
                                                     width: "6px",
