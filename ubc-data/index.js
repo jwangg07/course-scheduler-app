@@ -9,8 +9,13 @@ app.use(cors({
     credentials: true
 }));
 
-// GET /api/terms  ->  { terms: [{ id, name, start, end }, ...] }
-// dropdown in the React app fetch to populate options.
+/**
+ * GET /api/terms
+ * Returns the list of available terms for the term dropdown in the React app.
+ * @route GET /api/terms
+ * @returns {200} JSON body `{ terms: Array<{ id: number, name: string }> }`
+ * @returns {502} JSON body `{ error: string, detail: string }` if the upstream fetch fails.
+ */
 app.get("/api/terms", async (req, res) => {
     try {
         const terms = await getAvailableTerms();
@@ -21,9 +26,16 @@ app.get("/api/terms", async (req, res) => {
     }
 });
 
-// GET /api/sections/CPSC/110              -> sections for the current term
-// GET /api/sections/CPSC/110?term=1454    -> sections for a specific term
-// getCourseSections falls back to whichever term covers today.
+/**
+ * GET /api/sections/:dept/:course
+ * Returns section data for a given department + course number,
+ * @route GET /api/sections/:dept/:course
+ * @param {string} req.params.dept - Subject code (e.g. "CPSC").
+ * @param {string} req.params.course - Course number, (e.g. "110").
+ * @param {string} [req.query.term] - Numeric term ID as a string (e.g. "1454").
+ * @returns {200} JSON body `{ dept: string, course: string, sections: object }`
+ * @returns {502} JSON body `{ error: string, detail: string }` if the upstream fetch fails.
+ */
 app.get("/api/sections/:dept/:course", async (req, res) => {
     const { dept, course } = req.params;
     const termId = req.query.term ? Number(req.query.term) : undefined;

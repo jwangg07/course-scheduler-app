@@ -1,17 +1,10 @@
-// node scripts/fetch-status.js
+// To run: node scripts/fetch-status.js
 
 import { writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 
 const API_URL = "https://courses.students.ubc.ca/jsonapi/taxonomy_term/status";
 
-/**
- * Fetches the full section-status taxonomy (Open/Waitlist/Closed/etc.) from
- * UBC's Drupal JSON:API and writes an `{ id: name }` lookup table to
- * `data/status.json`.
- * @returns {Promise<null|void>} Resolves with `null` early if the request fails
- *   or returns no data; otherwise resolves `undefined` after writing the file.
- */
 async function main() {
     const status = {};
 
