@@ -10,12 +10,22 @@ const MAX_ID = 1953;
 const PACK_SIZE = 5; // size of request at one time
 const DELAY = 150; // pause between batches
 
+/**
+ * Pauses execution for the given duration for UBC server politeness.
+ * @param {number} ms - Milliseconds to sleep.
+ * @returns {Promise<void>} Resolves after the delay.
+ */
 function sleep(ms) {
 	return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-// Fetches one course for a given subject ID and extracts course code and number
-// Returns null if there's no course at this subject ID
+/**
+ * Fetches a single course for a given numeric subject ID and extracts the
+ * subject's course-code prefix (e.g. "CPSC_V").
+ * @param {number} subjectId - Drupal internal subject/target ID.
+ * @returns {Promise<string|null>} The resolved subject code prefix, or `null`
+ *   if the request fails, returns no data, or the code can't be parsed.
+ */
 async function fetchSubjectInfo(subjectId) {
 	const url =
 		`${BASE}?filter[field_subject.meta.drupal_internal__target_id]=${subjectId}` +
@@ -41,6 +51,12 @@ async function fetchSubjectInfo(subjectId) {
 	return rawCode;
 }
 
+/**
+ * Scans the full subject ID range (`MIN_ID`-`MAX_ID`) in batches of
+ * `PACK_SIZE`, resolving each ID to a subject code via {@link fetchSubjectInfo},
+ * and writes the resulting `{ code: id }` map to `data/subjects.json`.
+ * @returns {Promise<void>} Resolves once the output file has been written.
+ */
 async function main() {
 	const subjects = {}; // code -> course code
 	const ids = [];

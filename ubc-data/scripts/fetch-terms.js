@@ -5,6 +5,12 @@ import { fileURLToPath } from "node:url";
 
 const API_URL = "https://courses.students.ubc.ca/jsonapi/taxonomy_term/term";
 
+/**
+ * Fetches the full term taxonomy from UBC's Drupal JSON:API and writes an
+ * `{ name: id }` lookup table to `data/terms.json`.
+ * @returns {Promise<null|void>} Resolves with `null` early if the request fails
+ *   or returns no data; otherwise resolves `undefined` after writing the file.
+ */
 async function main() {
     const terms = {};
 
