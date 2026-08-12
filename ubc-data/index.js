@@ -5,7 +5,7 @@ import { getCourseSections, getAvailableTerms } from "./lib/ubcClient.js";
 const app = express();
 
 app.use(cors({
-    origin: ['https://course-scheduler-app-alpha.vercel.app', 'http://localhost:5173'],
+    origin: ['https://course-scheduler-app-alpha.vercel.app', 'https://ubcschedules.vercel.app', 'http://localhost:5173'],
     credentials: true
 }));
 

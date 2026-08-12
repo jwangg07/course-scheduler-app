@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { fmtTime } from "../util/time.js";
+import { fmtTime, DAY_LABEL } from "../util/time.js";
 import { STATUS_COLORS } from "../util/status.js";
 
 // Full-screen backdrop + centered modal 
@@ -100,7 +100,7 @@ export default function SectionPicker({ course, selection = {}, onToggle, onSele
                                     const timeLabel =
                                         opt.days.length === 0
                                             ? "Async / online"
-                                            : `${opt.days.join("")} ${fmtTime(opt.start)}\u2013${fmtTime(opt.end)}`;
+                                            : `${opt.days.map((d) => DAY_LABEL[d] ?? d).join("")} ${fmtTime(opt.start)}\u2013${fmtTime(opt.end)}`;
 
                                     return (
                                         <label
@@ -113,8 +113,7 @@ export default function SectionPicker({ course, selection = {}, onToggle, onSele
                                                 checked={checked}
                                                 onChange={() => onToggle(type, opt.id)}
                                             />
-                                            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flex: "1"}}>
-
+                                            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flex: "1" }}>
                                                 <div style={{ minWidth: 0 }}>
                                                     <div>{opt.label}</div>
                                                     <div style={{ color: "#5A6B7A", fontSize: "11.5px" }}>{timeLabel}</div>

@@ -17,8 +17,8 @@ const INSTRUCTIONAL_METHOD = JSON.parse(readFileSync(instructional_methodPath, "
 const statusPath = fileURLToPath(new URL("../data/status.json", import.meta.url));
 const STATUS = JSON.parse(readFileSync(statusPath, "utf-8"));
 
-// Drupal's day code conversion
-const DAY_MAP = { m: "M", t: "T", w: "W", th: "R", f: "F" };
+// // Drupal's day code conversion
+// const DAY_MAP = { m: "M", t: "T", w: "W", th: "R", f: "F" };
 
 // Terms (from data/terms.json) -> array
 export function getAvailableTerms() {
@@ -81,7 +81,7 @@ function parseSections(json, dept, course) {
         const entry = {
             id: attrs.title,
             label: attrs.field_section_number,
-            days: (attrs.field_days ?? []).map((d) => DAY_MAP[d] ?? d),
+            days: attrs.field_days ?? [], 
             start: Math.round(attrs.field_start_time / 60), // seconds -> minutes
             end: Math.round(attrs.field_end_time / 60),
             status: resolveStatus(section),

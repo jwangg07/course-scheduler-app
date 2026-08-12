@@ -1,5 +1,5 @@
-export const DAY_ORDER = ["M", "T", "W", "R", "F"];
-export const DAY_LABEL = { M: "Mon", T: "Tue", W: "Wed", R: "Thu", F: "Fri" };
+export const DAY_ORDER = ["m", "t", "w", "th", "f"];
+export const DAY_LABEL = { m: "Mon", t: "Tue", w: "Wed", th: "Thu", f: "Fri" };
 
 // "09:30" -> 570 (minutes since midnight). Storing times as plain numbers
 // makes every later comparison a simple numeric comparison
