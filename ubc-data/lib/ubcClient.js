@@ -17,15 +17,21 @@ const INSTRUCTIONAL_METHOD = JSON.parse(readFileSync(instructional_methodPath, "
 const statusPath = fileURLToPath(new URL("../data/status.json", import.meta.url));
 const STATUS = JSON.parse(readFileSync(statusPath, "utf-8"));
 
-// // Drupal's day code conversion
-// const DAY_MAP = { m: "M", t: "T", w: "W", th: "R", f: "F" };
-
-// Terms (from data/terms.json) -> array
+/**
+ * Returns all terms as an array from `data/terms.json`.
+ * @returns {Array<{id: number, name: string}>} All available terms.
+ */
 export function getAvailableTerms() {
     return Object.entries(TERMS).map(([name, id]) => ({ id, name }));
 }
 
-// dept code -> numeric subject ID
+/**
+ * Resolves a subject code (e.g. "CPSC_V") to its numeric
+ * Drupal subject ID, using the local `data/subjects.json` lookup table.
+ * @param {string} dept - Subject code (e.g. "CPSC_V").
+ * @returns {number} The corresponding numeric subject ID.
+ * @throws {Error} If `dept` is not found in `data/subjects.json`
+ */
 function resolveSubjectId(dept) {
     const id = SUBJECTS[dept];
     if (!id) {
@@ -34,7 +40,14 @@ function resolveSubjectId(dept) {
     return id;
 }
 
-// fetch sections for a resolved course + term
+/**
+ * Fetches all sections for a given course in a given term, directly from UBC's Drupal 
+ * @param {string} dept - Subject code (e.g. "CPSC_V").
+ * @param {string} course - Course number (e.g. "110").
+ * @param {number} [termId] - Numeric term ID; defaults to the first entry in `data/terms.json`.
+ * @returns {Promise<{LEC: Array, LAB: Array, TUT: Array}>} Sections grouped by component type produced by {@link parseSections}.
+ * @throws {Error} If no term can be resolved, the subject code is unknown, or the upstream fetch fails.
+ */
 export async function getCourseSections(dept, course, termId) {
     const resolvedTermId = termId ?? Object.values(TERMS)[0];
     if (!resolvedTermId) throw new Error("No term specified"); // data/terms.json empty
@@ -62,8 +75,17 @@ export async function getCourseSections(dept, course, termId) {
     return result;
 }
 
-// Turns a raw JSON:API response into { title, sections: { LEC: [...], ... } }
-// matching the shape src/App.jsx will build a course object from.
+/**
+ * Transforms JSON:API `node/section` response into 
+ * `{ LEC: [...], LAB: [...], TUT: [...] }`.
+ *
+ * @param {Object} json - Raw JSON:API response body from `node/section`.
+ * @param {string} dept - Department code (e.g. "CPSC_V")
+ * @param {string} course - Course number (e.g. "110")
+ * @returns {{LEC: Array<object>, LAB: Array<object>, TUT: Array<object>}} Sections grouped by
+ *   component type. Each section entry has the shape
+ *   `{ id, label, days: string[], start: number, end: number, status: string }`.
+ */
 function parseSections(json, dept, course) {
     const includedById = new Map((json.included ?? []).map((item) => [item.id, item]));
     const sections = { LEC: [], LAB: [], TUT: [] };
@@ -81,7 +103,7 @@ function parseSections(json, dept, course) {
         const entry = {
             id: attrs.title,
             label: attrs.field_section_number,
-            days: attrs.field_days ?? [], 
+            days: attrs.field_days ?? [],
             start: Math.round(attrs.field_start_time / 60), // seconds -> minutes
             end: Math.round(attrs.field_end_time / 60),
             status: resolveStatus(section),
@@ -95,12 +117,20 @@ function parseSections(json, dept, course) {
     return sections;
 }
 
-// Resolve status type by drupal internal id
+/**
+ * Resolves a section's human-readable status (e.g. "Open") via the `data/status.json` lookup table.
+ * @param {object} section - A single `node--section` JSON:API resource object.
+ * @returns {string|undefined} The status name, or `undefined` if the ID isn't in the lookup table.
+ */
 function resolveStatus(section) {
     return STATUS[section.relationships.field_status.data.meta.drupal_internal__target_id];
 }
 
-// Resolve component type by drupal internal id
+/**
+ * Resolves a section's component type (e.g. "Lecture") via the `data/instructional_method.json` lookup table.
+ * @param {object} section - A single `node--section` JSON:API resource object.
+ * @returns {string|undefined} The instructional method name, or `undefined` if the ID isn't in the lookup table.
+ */
 function resolveComponentType(section) {
     return INSTRUCTIONAL_METHOD[section.relationships.field_instructional_method.data.meta.drupal_internal__target_id];
 }
