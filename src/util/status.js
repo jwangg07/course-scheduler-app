@@ -1,4 +1,4 @@
-// Status labels (matching ubc-data/data/status.json) mapped to a display color.
+/** Map status label to display color */
 export const STATUS_COLORS = {
     Open: "#3D7068",
     Waitlist: "#C99A3E",
@@ -7,4 +7,5 @@ export const STATUS_COLORS = {
     Other: "#8898A6",
 };
 
+/** Statuses that can be excluded via the settings */
 export const FILTER_STATUSES = ["Waitlist", "Closed"];
