@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { getCourseSections, getAvailableTerms } from "./lib/ubcClient.js";
+import { sendBugReportEmail } from "./lib/mailer.js";
 
 const app = express();
 
@@ -8,6 +9,7 @@ app.use(cors({
     origin: ['https://course-scheduler-app-alpha.vercel.app', 'https://ubcschedules.vercel.app', 'http://localhost:5173'],
     credentials: true
 }));
+app.use(express.json());
 
 /**
  * GET /api/terms
@@ -48,6 +50,32 @@ app.get("/api/sections/:dept/:course", async (req, res) => {
         res.status(502).json({ error: "Failed to fetch course data", detail: err.message });
     }
 });
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// POST /api/bug-report  { email, description } -> { ok: true }
+app.post("/api/bug-report", async (req, res) => {
+    const { email, description } = req.body ?? {};
+
+    if (!email || !EMAIL_RE.test(email)) {
+        return res.status(400).json({ error: `A valid email address is required` });
+    }
+    if (!description || !description.trim()) {
+        return res.status(400).json({ error: "A bug description is required" });
+    }
+    if (description.length > 5000) {
+        return res.status(400).json({ error: "Description is too long (max 5000 characters)" });
+    }
+
+    try {
+        await sendBugReportEmail({ reporterEmail: email.trim(), description: description.trim() });
+        res.json({ ok: true });
+    } catch (err) {
+        console.error(err);
+        res.status(502).json({ error: "Failed to send bug report", detail: err.message });
+    }
+});
+
 
 app.get("/health-check", (req, res) => {
     res.sendStatus(200);

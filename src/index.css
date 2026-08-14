@@ -26,9 +26,12 @@ body {
 .cs-btn {
   transition: opacity 0.15s ease, transform 0.1s ease;
 }
+
 .cs-btn:hover {
-  opacity: 0.88;
+  opacity: 0.75;
+  box-shadow: 0 2px 8px rgba(20, 32, 43, 0.08);
 }
+
 .cs-btn:active {
   transform: scale(0.98);
 }
@@ -43,6 +46,7 @@ body {
   cursor: pointer;
   transition: background 0.15s ease;
 }
+
 .cs-course-row:hover {
   background: #eef1f4;
 }
@@ -50,6 +54,7 @@ body {
 .cs-course-info {
   transition: opacity 0.12s ease;
 }
+
 .cs-course-row:hover .cs-course-info {
   opacity: 0;
 }
@@ -66,16 +71,22 @@ body {
   color: #C99A3E;
   opacity: 0;
   transition: opacity 0.12s ease;
-  pointer-events: none; /* so it never intercepts the row's own click */
+  pointer-events: none;
 }
+
 .cs-course-row:hover .cs-select-hint {
   opacity: 1;
 }
 
 /* Skeleton blocks */
 @keyframes skeleton-shimmer {
-  0% { background-position: -400px 0; }
-  100% { background-position: 400px 0; }
+  0% {
+    background-position: -400px 0;
+  }
+
+  100% {
+    background-position: 400px 0;
+  }
 }
 
 /* Light skeleton (main area) */

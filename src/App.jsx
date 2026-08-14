@@ -7,6 +7,7 @@ import ScheduleNav from "./ui/ScheduleNav.jsx";
 import EmptyState from "./ui/EmptyState.jsx";
 import { DEFAULT_SETTINGS } from "./ui/ScheduleSettings.jsx";
 import SkeletonLoader from "./ui/SkeletonLoader.jsx";
+import BugReport from "./ui/BugReport.jsx";
 
 export default function App() {
     const [campus, setCampus] = useState("Vancouver");
@@ -165,85 +166,95 @@ export default function App() {
 
     if (termsError) {
         return (
-            <div style={{ padding: "24px", color: "#B5563C", fontFamily: "'Inter', system-ui, sans-serif" }}>
-                Couldn't load terms from the backend ({termsError}). Is the server running on localhost:3001?
-            </div>
+            <>
+                <BugReport />
+                <div style={{ padding: "24px", color: "#B5563C", fontFamily: "'Inter', system-ui, sans-serif" }}>
+                    Couldn't load terms from the backend ({termsError}). Is the server running on localhost:3001?
+                </div>
+            </>
         );
     }
 
     if (terms.length === 0) {
-        return <SkeletonLoader />;
+        return (
+            <>
+                <BugReport />
+                <SkeletonLoader />
+            </>
+        );
     }
-
     return (
-        <div style={{
-            fontFamily: "'Inter', system-ui, sans-serif",
-            background: "#F4F6F8",
-            minHeight: "600px",
-            color: "#14202B",
-            display: "flex",
-            borderRadius: "14px",
-            overflow: "hidden",
-            border: "1px solid #DCE2E7",
-        }}>
-            <CourseSidebar
-                campus={campus}
-                onCampusChange={handleCampusChange}
-                terms={displayTerms}
-                selectedTermId={selectedTermId}
-                onTermChange={handleTermChange}
-                courses={courses}
-                onAddCourse={handleAddCourse}
-                onRemoveCourse={handleRemoveCourse}
-                addStatus={addStatus}
-                onGenerate={() => { setGenerated(true); setIndex(0); }}
-                settings={settings}
-                onSettingsChange={setSettings}
-                sectionSelections={sectionSelections}
-                onToggleSection={handleToggleSection}
-                onSelectAllSections={handleSelectAllSections}
-                onSelectNoSections={handleSelectNoSections}
-            />
+        <>
+            <BugReport />
+            <div style={{
+                fontFamily: "'Inter', system-ui, sans-serif",
+                background: "#F4F6F8",
+                minHeight: "600px",
+                color: "#14202B",
+                display: "flex",
+                borderRadius: "14px",
+                overflow: "hidden",
+                border: "1px solid #DCE2E7",
+            }}>
+                <CourseSidebar
+                    campus={campus}
+                    onCampusChange={handleCampusChange}
+                    terms={displayTerms}
+                    selectedTermId={selectedTermId}
+                    onTermChange={handleTermChange}
+                    courses={courses}
+                    onAddCourse={handleAddCourse}
+                    onRemoveCourse={handleRemoveCourse}
+                    addStatus={addStatus}
+                    onGenerate={() => { setGenerated(true); setIndex(0); }}
+                    settings={settings}
+                    onSettingsChange={setSettings}
+                    sectionSelections={sectionSelections}
+                    onToggleSection={handleToggleSection}
+                    onSelectAllSections={handleSelectAllSections}
+                    onSelectNoSections={handleSelectNoSections}
+                />
 
-            <div style={{ flex: 1, padding: "24px 28px", overflow: "auto" }}>
-                {!generated && (
-                    <EmptyState
-                        title="Add your courses, then generate"
-                        message="Search for courses by subject and number on the left. The engine will search every combination of lecture, lab, and tutorial sections and show you only the ones with zero time conflicts."
-                    />
-                )}
+                <div style={{ flex: 1, padding: "24px 28px", overflow: "auto" }}>
+                    {!generated && (
+                        <EmptyState
+                            title="Add your courses, then generate"
+                            message="Search for courses by subject and number on the left. The engine will search every combination of lecture, lab, and tutorial sections and show you only the ones with zero time conflicts."
+                        />
+                    )}
 
-                {generated && schedules.length === 0 && (
-                    <EmptyState
-                        tone="error"
-                        title={unavailableComponents.length > 0 ? "No available schedules" : "No conflict-free combination exists"}
-                        message={
-                            unavailableComponents.length > 0
-                                ? `${unavailableComponents.map((u) => `${u.courseCode} ${u.type}`).join(", ")} ${unavailableComponents.length > 1 ? "have" : "has"
-                                } no sections matching your current filters. Try loosening the time range, status, or section filters.`
-                                : "Every section pairing for these courses overlaps somewhere. Try removing a course or swapping one out to see if a valid schedule opens up."
-                        }
-                    />
-                )}
+                    {generated && schedules.length === 0 && (
+                        <EmptyState
+                            tone="error"
+                            title={unavailableComponents.length > 0 ? "No available schedules" : "No conflict-free combination exists"}
+                            message={
+                                unavailableComponents.length > 0
+                                    ? `${unavailableComponents.map((u) => `${u.courseCode} ${u.type}`).join(", ")} ${unavailableComponents.length > 1 ? "have" : "has"
+                                    } no sections matching your current filters. Try loosening the time range, status, or section filters.`
+                                    : "Every section pairing for these courses overlaps somewhere. Try removing a course or swapping one out to see if a valid schedule opens up."
+                            }
+                        />
+                    )}
 
-                {generated && schedules.length > 0 && (
-                    <>
-                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "6px" }}>
-                            <div style={{ fontFamily: "'Fraunces', serif", fontSize: "19px", color: "#1F3A5C" }}>
-                                {schedules.length === 100 ? "99+" : schedules.length} valid schedule{schedules.length > 1 ? "s" : ""} found
+                    {generated && schedules.length > 0 && (
+                        <>
+                            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "12px", marginRight: "75px" }}>
+                                <div style={{ fontFamily: "'Fraunces', serif", fontSize: "19px", color: "#1F3A5C" }}>
+                                    {schedules.length === 100 ? "99+" : schedules.length} valid schedule{schedules.length > 1 ? "s" : ""} found
+                                </div>
+                                <ScheduleNav
+                                    index={index}
+                                    total={schedules.length}
+                                    onPrev={() => setIndex((i) => Math.max(0, i - 1))}
+                                    onNext={() => setIndex((i) => Math.min(schedules.length - 1, i + 1))}
+                                />
                             </div>
-                            <ScheduleNav
-                                index={index}
-                                total={schedules.length}
-                                onPrev={() => setIndex((i) => Math.max(0, i - 1))}
-                                onNext={() => setIndex((i) => Math.min(schedules.length - 1, i + 1))}
-                            />
-                        </div>
 
-                        <ScheduleCalendar schedule={current} settings={settings} />
-                    </>
-                )}
+                            <ScheduleCalendar schedule={current} settings={settings} />
+                        </>
+                    )}
+                </div>
             </div>
-        </div>
+        </>
     );
 }
