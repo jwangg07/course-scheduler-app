@@ -1,12 +1,9 @@
 import { useEffect } from "react";
 import { fmtTime, DAY_LABEL } from "../util/time.js";
 import { STATUS_COLORS } from "../util/status.js";
+import { COLORS } from "../util/theme.js";
+import { X } from "lucide-react";
 
-// Full-screen backdrop + centered modal 
-// Clicking the backdrop closes it; clicking inside the card does not, thanks
-// to stopPropagation below. There's no separate "save" step — onToggle
-// already writes straight into App.jsx's sectionSelections state as the user
-// clicks, so closing the modal doesn't need to do anything but close.
 export default function SectionPicker({ course, selection = {}, onToggle, onSelectAll, onSelectNone, onClose }) {
     const types = Object.keys(course.components).filter(
         (type) => course.components[type].length > 0
@@ -51,7 +48,7 @@ export default function SectionPicker({ course, selection = {}, onToggle, onSele
                     background: "#fff",
                     color: "#14202B",
                     borderRadius: "14px",
-                    border: "1px solid #DCE2E7",
+                    border: `1px solid ${COLORS.ACCENT}`,
                     boxShadow: "0 20px 60px rgba(0,0,0,0.35)",
                     padding: "24px 26px",
                 }}
@@ -61,20 +58,20 @@ export default function SectionPicker({ course, selection = {}, onToggle, onSele
                         <div style={{ fontFamily: "'JetBrains Mono', monospace", fontWeight: 600, fontSize: "16px" }}>
                             {course.code}
                         </div>
-                        <div style={{ fontSize: "12.5px", color: "#5A6B7A", marginTop: "2px" }}>
+                        {/* <div style={{ fontSize: "12.5px", color: "#5A6B7A", marginTop: "2px" }}>
                             {course.title}
-                        </div>
+                        </div> */}
                     </div>
                     <button
                         onClick={onClose}
                         aria-label="Close section picker"
-                        style={{ background: "none", border: "none", cursor: "pointer", fontSize: "20px", color: "#5A6B7A", lineHeight: 1, padding: "4px" }}
+                        style={{ background: "none", border: "none", cursor: "pointer", fontSize: "20px", color: COLORS.TEXT_DARK, lineHeight: 1, padding: "4px" }}
                     >
-                        ×
+                        <X size={14} strokeWidth={4} />
                     </button>
                 </div>
 
-                <div style={{ fontSize: "12px", color: "#8898A6", marginBottom: "18px" }}>
+                <div style={{ fontSize: "12px", color: COLORS.TEXT_MEDIUM, marginBottom: "18px" }}>
                     Uncheck any sections you don't want the scheduler to consider.
                 </div>
 
@@ -84,7 +81,7 @@ export default function SectionPicker({ course, selection = {}, onToggle, onSele
 
                     return (
                         <div key={type} style={{ marginBottom: "20px" }}>
-                            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "10px", paddingBottom: "6px", borderBottom: "1px solid #E5E9EC" }}>
+                            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "10px", paddingBottom: "6px", borderBottom: `1px solid ${COLORS.ACCENT}` }}>
                                 <div style={{ fontSize: "12px", textTransform: "uppercase", letterSpacing: "0.06em", color: "#5A6B7A", fontWeight: 600 }}>
                                     {type}
                                 </div>
@@ -100,7 +97,7 @@ export default function SectionPicker({ course, selection = {}, onToggle, onSele
                                     const timeLabel =
                                         opt.days.length === 0
                                             ? "Async / online"
-                                            : `${opt.days.map((d) => DAY_LABEL[d] ?? d).join("")} ${fmtTime(opt.start)}\u2013${fmtTime(opt.end)}`;
+                                            : `${opt.days.map((d) => DAY_LABEL[d] ?? d).join(" ")} ${fmtTime(opt.start)}\u2013${fmtTime(opt.end)}`;
 
                                     return (
                                         <label
@@ -116,7 +113,7 @@ export default function SectionPicker({ course, selection = {}, onToggle, onSele
                                             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flex: "1" }}>
                                                 <div style={{ minWidth: 0 }}>
                                                     <div>{opt.label}</div>
-                                                    <div style={{ color: "#5A6B7A", fontSize: "11.5px" }}>{timeLabel}</div>
+                                                    <div style={{ color: STATUS_COLORS[opt.status] + "BF", fontSize: "11.5px" }}>{timeLabel}</div>
                                                 </div>
                                                 <div style={{ marginRight: "10px" }}>{opt.status}</div>
                                             </div>

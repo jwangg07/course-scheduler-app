@@ -1,3 +1,5 @@
+import { COLORS } from "../util/theme";
+
 // Placeholder UI shown while backend fetchTerms() is loading 
 export default function SkeletonLoader() {
     return (
@@ -9,7 +11,7 @@ export default function SkeletonLoader() {
             minHeight: "600px",
         }}>
             {/* Sidebar Skeleton */}
-            <div style={{ width: "450px", background: "#1F3A5C", padding: "24px 20px", flexShrink: 0 }}>
+            <div style={{ width: "450px", background: COLORS.PRIMARY, padding: "24px 20px", flexShrink: 0 }}>
                 {/* Title + subtitle */}
                 <div className="skeleton-dark" style={{ width: "190px", height: "22px", marginBottom: "8px" }} />
                 <div className="skeleton-dark" style={{ width: "130px", height: "13px", marginBottom: "26px" }} />

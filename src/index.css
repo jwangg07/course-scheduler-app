@@ -1,5 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
+:root {
+  --ERROR: #e7957f;
+  --BACKGROUND: #F4F6F8;
+  --ACCENT: #dce2e7;
+  --TEXT_DARK: #002145;
+  --TEXT_MEDIUM: #9FB3C8;
+  --TEXT_LIGHT: #F4F6F8;
+  --PRIMARY: #002145;
+  --PRIMARY_DARK: #00386B;
+  --PRIMARY_DARK_ACCENT: #4d5e72;
+  --PRIMARY_LIGHT: #9FB3C8;
+  --SECONDARY: #F2A900;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -23,11 +37,13 @@ body {
   background: #eef1f4;
 } */
 
-.cs-btn {
+.cs-btn,
+.cs-nav-btn:hover {
   transition: opacity 0.15s ease, transform 0.1s ease;
 }
 
-.cs-btn:hover {
+.cs-btn:hover,
+.cs-nav-btn:hover {
   opacity: 0.75;
   box-shadow: 0 2px 8px rgba(20, 32, 43, 0.08);
 }
@@ -48,34 +64,43 @@ body {
 }
 
 .cs-course-row:hover {
-  background: #eef1f4;
+  background: #eef1f4cf;
 }
 
 .cs-course-info {
   transition: opacity 0.12s ease;
 }
 
-.cs-course-row:hover .cs-course-info {
+/* .cs-course-row:hover .cs-course-info {
   opacity: 0;
-}
+} */
 
 .cs-select-hint {
   position: absolute;
+  width: 100%;
   left: 8px;
   top: 0;
   bottom: 0;
   display: flex;
   align-items: center;
+  justify-content: center;
   font-size: 12.5px;
   font-weight: 500;
-  color: #C99A3E;
   opacity: 0;
-  transition: opacity 0.12s ease;
+  transition: opacity 0.15s ease;
   pointer-events: none;
 }
 
 .cs-course-row:hover .cs-select-hint {
   opacity: 1;
+}
+
+.course-remove-button {
+  transition: color 0.15s ease;
+}
+
+.cs-course-row:hover .course-remove-button {
+  color: var(--TEXT_DARK);
 }
 
 /* Skeleton blocks */

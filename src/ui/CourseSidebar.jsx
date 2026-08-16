@@ -1,6 +1,8 @@
 import { useState } from "react";
-import ScheduleSettings from "./ScheduleSettings.jsx"
-import SectionPicker from "./SectionPicker.jsx"
+import ScheduleSettings from "./ScheduleSettings.jsx";
+import SectionPicker from "./SectionPicker.jsx";
+import { COLORS } from "./../util/theme.js";
+import { X, ArrowRight } from "lucide-react";
 
 export default function CourseSidebar({
     campus,
@@ -41,30 +43,30 @@ export default function CourseSidebar({
         setCourseNumber("");
     };
     return (
-        <div style={{ width: "450px", background: "#1F3A5C", color: "#EDF1F5", padding: "24px 20px", flexShrink: 0 }}>
+        <div style={{ width: "450px", background: COLORS.PRIMARY, color: COLORS.TEXT_LIGHT, padding: "24px 20px", flexShrink: 0 }}>
             <div style={{ fontFamily: "'Fraunces', serif", fontSize: "20px", fontWeight: 600, letterSpacing: "0.2px" }}>
                 Schedule Builder
             </div>
-            <div style={{ fontSize: "12.5px", color: "#9FB3C8", marginTop: "4px", marginBottom: "20px" }}>
+            <div style={{ fontSize: "12.5px", color: COLORS.TEXT_MEDIUM, marginTop: "4px", marginBottom: "20px" }}>
                 Live UBC section data
             </div>
 
             {/* Campus Picker */}
-            <div style={{ fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.06em", color: "#9FB3C8", marginBottom: "6px" }}>
+            <div style={{ fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.06em", color: COLORS.TEXT_MEDIUM, marginBottom: "6px" }}>
                 Campus
             </div>
             <select
                 className="cs-select"
                 value={campus}
                 onChange={(e) => onCampusChange(e.target.value)}
-                style={{ width: "100%", marginBottom: "20px", padding: "8px 10px", borderRadius: "8px", border: "1px solid #3E5872", background: "#26466B", color: "#EDF1F5", fontSize: "13px" }}
+                style={{ width: "100%", marginBottom: "20px", padding: "8px 10px", borderRadius: "8px", border: `1px solid ${COLORS.PRIMARY_DARK_ACCENT}`, background: COLORS.PRIMARY_DARK, color: COLORS.TEXT_LIGHT, fontSize: "13px" }}
             >
                 <option>Vancouver</option>
                 <option>Okanagan</option>
             </select>
 
             {/* Term Picker*/}
-            <div style={{ fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.06em", color: "#9FB3C8", marginBottom: "6px" }}>
+            <div style={{ fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.06em", color: COLORS.TEXT_MEDIUM, marginBottom: "6px" }}>
                 Term
             </div>
             <select
@@ -80,9 +82,9 @@ export default function CourseSidebar({
                     marginBottom: "20px",
                     padding: "8px 10px",
                     borderRadius: "8px",
-                    border: "1px solid #3E5872",
-                    background: "#26466B",
-                    color: term ? "#EDF1F5" : "#9FB3C8", // grayed out until a real term is picked
+                    border: `1px solid ${COLORS.PRIMARY_DARK_ACCENT}`,
+                    background: COLORS.PRIMARY_DARK,
+                    color: COLORS.TEXT_LIGHT,
                     fontSize: "13px",
                 }}
             >
@@ -93,7 +95,7 @@ export default function CourseSidebar({
             </select>
 
             {/* --- Add-course form --- */}
-            <div style={{ fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.06em", color: "#9FB3C8", marginBottom: "6px" }}>
+            <div style={{ fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.06em", color: COLORS.TEXT_MEDIUM, marginBottom: "6px" }}>
                 Add a course
             </div>
             <form onSubmit={handleAdd} style={{ display: "flex", gap: "6px", marginBottom: "10px" }}>
@@ -101,25 +103,25 @@ export default function CourseSidebar({
                     value={dept}
                     onChange={(e) => setDept(e.target.value)}
                     placeholder="CPSC"
-                    style={{ width: "70px", padding: "8px 10px", borderRadius: "8px", border: "1px solid #3E5872", background: "#26466B", color: "#EDF1F5", fontSize: "13px", fontFamily: "'JetBrains Mono', monospace" }}
+                    style={{ width: "70px", padding: "8px 10px", borderRadius: "8px", border: `1px solid ${COLORS.PRIMARY_DARK_ACCENT}`, background: COLORS.PRIMARY_DARK, color: COLORS.TEXT_LIGHT, fontSize: "13px", fontFamily: "'JetBrains Mono', monospace" }}
                 />
                 <input
                     value={courseNumber}
                     onChange={(e) => setCourseNumber(e.target.value)}
                     placeholder="110"
-                    style={{ flex: 1, padding: "8px 10px", borderRadius: "8px", border: "1px solid #3E5872", background: "#26466B", color: "#EDF1F5", fontSize: "13px", fontFamily: "'JetBrains Mono', monospace" }}
+                    style={{ flex: 1, padding: "8px 10px", borderRadius: "8px", border: `1px solid ${COLORS.PRIMARY_DARK_ACCENT}`, background: COLORS.PRIMARY_DARK, color: COLORS.TEXT_LIGHT, fontSize: "13px", fontFamily: "'JetBrains Mono', monospace" }}
                 />
                 <button
                     type="submit"
                     className="cs-btn"
                     disabled={addStatus.loading}
-                    style={{ padding: "8px 12px", borderRadius: "8px", border: "none", background: "#C99A3E", color: "#1F2A16", fontWeight: 600, fontSize: "13px", cursor: addStatus.loading ? "wait" : "pointer" }}
+                    style={{ padding: "8px 12px", borderRadius: "8px", border: "none", background: COLORS.SECONDARY, color: COLORS.TEXT_DARK, fontWeight: 600, fontSize: "13px", cursor: addStatus.loading ? "wait" : "pointer" }}
                 >
                     {addStatus.loading ? "…" : "Add"}
                 </button>
             </form>
             {(termError || addStatus.error) && (
-                <div style={{ fontSize: "12px", color: "#E8A398", marginBottom: "10px", lineHeight: 1.4 }}>
+                <div style={{ fontSize: "12px", color: COLORS.ERROR, marginBottom: "10px", lineHeight: 1.4 }}>
                     {termError || addStatus.error}
                 </div>
             )}
@@ -127,7 +129,7 @@ export default function CourseSidebar({
             {/* --- Added courses list --- */}
             <div style={{ marginBottom: "16px" }}>
                 {courses.length === 0 && (
-                    <div style={{ fontSize: "12.5px", color: "#7D93A8", padding: "8px 0" }}>
+                    <div style={{ fontSize: "12.5px", color: COLORS.TEXT_MEDIUM, padding: "8px 0" }}>
                         No courses added yet.
                     </div>
                 )}
@@ -143,12 +145,12 @@ export default function CourseSidebar({
                             <span style={{ width: "9px", height: "9px", borderRadius: "3px", background: c.color, display: "inline-block", flexShrink: 0 }} />
                             <div style={{ minWidth: 0 }}>
                                 <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "13px", fontWeight: 500 }}>{c.code}</div>
-                                <div style={{ fontSize: "11.5px", color: "#B9C8D6", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.title}</div>
+                                {/* <div style={{ fontSize: "11.5px", color: COLORS.PRIMARY_LIGHT, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.title}</div> */}
                             </div>
                         </div>
 
                         {/* Hidden until hover; see the .cs-select-hint rule in index.css */}
-                        <div className="cs-select-hint">Select sections →</div>
+                        <div className="cs-select-hint" style={{ color: COLORS.SECONDARY }}>SELECT SECTIONS</div>
 
                         <button
                             onClick={(e) => {
@@ -159,9 +161,9 @@ export default function CourseSidebar({
                                 onRemoveCourse(c.code);
                             }}
                             aria-label={`Remove ${c.code}`}
-                            style={{ background: "none", border: "none", color: "#9FB3C8", cursor: "pointer", fontSize: "16px", lineHeight: 1, padding: "4px", position: "relative", zIndex: 1 }}
+                            style={{ background: "none", border: "none", color: COLORS.TEXT_LIGHT, cursor: "pointer", fontSize: "16px", lineHeight: 1, padding: "4px", position: "relative", zIndex: 1 }}
                         >
-                            ×
+                            <X className="course-remove-button" size={12} strokeWidth={3} />
                         </button>
                     </div>
                 ))}
@@ -184,8 +186,8 @@ export default function CourseSidebar({
                 disabled={courses.length === 0}
                 style={{
                     width: "100%",
-                    background: courses.length === 0 ? "#3E5872" : "#C99A3E",
-                    color: courses.length === 0 ? "#9FB3C8" : "#1F2A16",
+                    background: courses.length === 0 ? COLORS.PRIMARY_DARK : COLORS.SECONDARY,
+                    color: courses.length === 0 ? COLORS.TEXT_LIGHT : COLORS.TEXT_DARK,
                     border: "none",
                     borderRadius: "8px",
                     padding: "11px",

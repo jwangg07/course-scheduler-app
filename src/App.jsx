@@ -8,6 +8,7 @@ import EmptyState from "./ui/EmptyState.jsx";
 import { DEFAULT_SETTINGS } from "./ui/ScheduleSettings.jsx";
 import SkeletonLoader from "./ui/SkeletonLoader.jsx";
 import BugReport from "./ui/BugReport.jsx";
+import { COLORS } from "./util/theme.js"
 
 export default function App() {
     const [campus, setCampus] = useState("Vancouver");
@@ -168,7 +169,7 @@ export default function App() {
         return (
             <>
                 <BugReport />
-                <div style={{ padding: "24px", color: "#B5563C", fontFamily: "'Inter', system-ui, sans-serif" }}>
+                <div style={{ padding: "24px", color: COLORS.ERROR, fontFamily: "'Inter', system-ui, sans-serif" }}>
                     Couldn't load terms from the backend ({termsError}). Is the server running on localhost:3001?
                 </div>
             </>
@@ -188,13 +189,13 @@ export default function App() {
             <BugReport />
             <div style={{
                 fontFamily: "'Inter', system-ui, sans-serif",
-                background: "#F4F6F8",
+                background: COLORS.BACKGROUND,
                 minHeight: "600px",
-                color: "#14202B",
+                color: COLORS.PRIMARY,
                 display: "flex",
                 borderRadius: "14px",
                 overflow: "hidden",
-                border: "1px solid #DCE2E7",
+                border: `1px solid ${COLORS.ACCENT}`,
             }}>
                 <CourseSidebar
                     campus={campus}
@@ -239,7 +240,7 @@ export default function App() {
                     {generated && schedules.length > 0 && (
                         <>
                             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "12px", marginRight: "75px" }}>
-                                <div style={{ fontFamily: "'Fraunces', serif", fontSize: "19px", color: "#1F3A5C" }}>
+                                <div style={{ fontFamily: "'Fraunces', serif", fontSize: "19px", color: COLORS.PRIMARY }}>
                                     {schedules.length === 100 ? "99+" : schedules.length} valid schedule{schedules.length > 1 ? "s" : ""} found
                                 </div>
                                 <ScheduleNav

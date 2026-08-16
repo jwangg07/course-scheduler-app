@@ -1,5 +1,6 @@
 import { DAY_START, DAY_END, fmtTime } from "../util/time.js";
 import { FILTER_STATUSES, STATUS_COLORS } from "../util/status.js";
+import {COLORS} from "../util/theme.js";
 
 // Hour options between the calendar's visible window
 const HOUR_OPTIONS = [];
@@ -44,12 +45,12 @@ export default function ScheduleSettings({ settings, onSettingsChange }) {
     };
 
     return (
-        <div style={{ marginTop: "22px", paddingTop: "18px", borderTop: "1px solid #3E5872" }}>
-            <div style={{ fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.06em", color: "#9FB3C8", marginBottom: "10px" }}>
+        <div style={{ marginTop: "22px", paddingTop: "18px", borderTop: `1px solid ${COLORS.PRIMARY_DARK_ACCENT}` }}>
+            <div style={{ fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.06em", color: COLORS.PRIMARY_LIGHT, marginBottom: "10px" }}>
                 Settings
             </div>
 
-            <div style={{ fontSize: "12.5px", color: "#EDF1F5", marginBottom: "6px" }}>
+            <div style={{ fontSize: "12.5px", color: COLORS.BACKGROUND, marginBottom: "6px" }}>
                 Only include classes that start after and end before:
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
@@ -63,7 +64,7 @@ export default function ScheduleSettings({ settings, onSettingsChange }) {
                         <option key={h} value={h}>{fmtTime(h * 60)}</option>
                     ))}
                 </select>
-                <span style={{ color: "#7D93A8", fontSize: "12px" }}>to</span>
+                <span style={{ color: COLORS.PRIMARY_LIGHT, fontSize: "12px" }}>to</span>
                 <select
                     className="cs-select"
                     value={settings.endHour}
@@ -77,14 +78,14 @@ export default function ScheduleSettings({ settings, onSettingsChange }) {
             </div>
 
             {/* --- status filter --- */}
-            <div style={{ fontSize: "12.5px", color: "#EDF1F5", marginTop: "18px", marginBottom: "8px" }}>
+            <div style={{ fontSize: "12.5px", color: COLORS.BACKGROUND, marginTop: "18px", marginBottom: "8px" }}>
                 Remove sections with status:
             </div>
             <div style={{ display: "flex", flexDirection: "row", gap: "2rem" }}>
                 {FILTER_STATUSES.map((status) => (
                     <label
                         key={status}
-                        style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "12.5px", color: "#EDF1F5", cursor: "pointer" }}
+                        style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "12.5px", color: COLORS.BACKGROUND, cursor: "pointer" }}
                     >
                         <input
                             type="checkbox"
@@ -105,8 +106,8 @@ const selectStyle = {
     flex: 1,
     padding: "8px 10px",
     borderRadius: "8px",
-    border: "1px solid #3E5872",
-    background: "#26466B",
-    color: "#EDF1F5",
+    border: `1px solid ${COLORS.PRIMARY_DARK_ACCENT}`,
+    background: COLORS.PRIMARY_DARK,
+    color: COLORS.BACKGROUND,
     fontSize: "13px",
 };

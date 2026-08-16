@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { submitBugReport } from "../api/ubcApi.js";
-import {Bug} from "lucide-react";
+import { Bug, FileX } from "lucide-react";
+import { COLORS } from "../util/theme.js";
+import { X } from "lucide-react";
 
 const INITIAL_FORM = { email: "", description: "" };
 
@@ -38,13 +40,14 @@ export default function BugReport() {
                 className="cs-btn"
                 style={{
                     position: "absolute",
+                    display: "flex",
                     top: "53px",
                     right: "65px",
                     zIndex: 40,
-                    padding: "8px 12px",
+                    padding: "10px 12px",
                     borderRadius: "8px",
                     border: "none",
-                    background: "#F5F6F8",
+                    background: COLORS.BACKGROUND,
                     cursor: "pointer",
                 }}
             >
@@ -71,23 +74,23 @@ export default function BugReport() {
                             width: "440px",
                             maxWidth: "100%",
                             background: "#fff",
-                            color: "#14202B",
+                            color: "red",
                             borderRadius: "14px",
-                            border: "1px solid #DCE2E7",
+                            border: `1px solid ${COLORS.ACCENT}`,
                             boxShadow: "0 20px 60px rgba(0,0,0,0.35)",
                             padding: "24px 26px",
                         }}
                     >
                         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
-                            <div style={{ fontFamily: "'Fraunces', serif", fontSize: "18px", color: "#1F3A5C" }}>
+                            <div style={{ fontFamily: "'Fraunces', serif", fontSize: "18px", color: COLORS.TEXT_DARK }}>
                                 Report a bug
                             </div>
                             <button
                                 onClick={close}
                                 aria-label="Close bug report form"
-                                style={{ background: "none", border: "none", cursor: "pointer", fontSize: "20px", color: "#5A6B7A", lineHeight: 1, padding: "4px" }}
+                                style={{ background: "none", border: "none", cursor: "pointer", fontSize: "20px", color: COLORS.TEXT_DARK, lineHeight: 1, padding: "4px" }}
                             >
-                                ×
+                                <X size={12} strokeWidth={4} />
                             </button>
                         </div>
 
@@ -97,11 +100,11 @@ export default function BugReport() {
                             </div>
                         ) : (
                             <form onSubmit={handleSubmit}>
-                                <div style={{ fontSize: "12px", color: "#8898A6", margin: "10px 0 18px" }}>
+                                <div style={{ fontSize: "12px", color: COLORS.TEXT_MEDIUM, margin: "10px 0 18px" }}>
                                     Ran into something broken? Describe what happened.
                                 </div>
 
-                                <label style={labelStyle}>Your email</label>
+                                <label style={labelStyle}>YOUR EMAIL</label>
                                 <input
                                     type="email"
                                     required
@@ -110,7 +113,7 @@ export default function BugReport() {
                                     style={inputStyle}
                                 />
 
-                                <label style={{ ...labelStyle, marginTop: "14px" }}>What went wrong?</label>
+                                <label style={{ ...labelStyle, marginTop: "14px" }}>WHAT WENT WRONG?</label>
                                 <textarea
                                     required
                                     value={form.description}
@@ -120,7 +123,7 @@ export default function BugReport() {
                                 />
 
                                 {status.error && (
-                                    <div style={{ fontSize: "12px", color: "#B5563C", marginTop: "10px" }}>
+                                    <div style={{ fontSize: "12px", color: COLORS.ERROR, marginTop: "10px" }}>
                                         {status.error}
                                     </div>
                                 )}
@@ -135,8 +138,8 @@ export default function BugReport() {
                                         padding: "11px",
                                         borderRadius: "8px",
                                         border: "none",
-                                        background: "#C99A3E",
-                                        color: "#1F2A16",
+                                        background: COLORS.SECONDARY,
+                                        color: COLORS.TEXT_DARK,
                                         fontWeight: 600,
                                         fontSize: "13.5px",
                                         cursor: status.loading ? "wait" : "pointer",
@@ -156,9 +159,8 @@ export default function BugReport() {
 const labelStyle = {
     display: "block",
     fontSize: "11px",
-    textTransform: "uppercase",
     letterSpacing: "0.06em",
-    color: "#5A6B7A",
+    color: COLORS.TEXT_DARK + "BF",
     marginBottom: "6px",
 };
 
@@ -166,9 +168,9 @@ const inputStyle = {
     width: "100%",
     padding: "9px 10px",
     borderRadius: "8px",
-    border: "1px solid #DCE2E7",
+    border: `1px solid ${COLORS.ACCENT}`,
     background: "#fff",
-    color: "#14202B",
+    color: COLORS.TEXT_DARK,
     fontSize: "13px",
     boxSizing: "border-box",
 };
