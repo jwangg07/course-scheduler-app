@@ -5,16 +5,24 @@ const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
 /**
  * Fetches the list of available terms from the backend.
- * @returns {Promise<Term[]>} list of { id, name } terms
+ * @returns {Promise<{ id: number, name: string }[]>} List of available terms
  * @throws {Error} if the request fails (non-2xx response)
  */
 export async function fetchTerms() {
-    await new Promise((r) => setTimeout(r, 5000)); // TEMP: simulate slow load
     const res = await fetch(`${API_BASE}/api/terms`);
     if (!res.ok) throw new Error(`Failed to load terms: ${res.status}`);
     const json = await res.json();
     return json.terms;
 }
+
+/** 
+ * @typedef {Object} CourseSections
+ * @property {string} label - Section number (e.g. "L10")
+ * @property {string[]} days - Days of the week the section meets (e.g. ["t", "th"])
+ * @property {number} start - Start time (minutes from midnight) (e.g. 570)
+ * @property {number} end - End time (minutes from midnight) (e.g. 660)
+ * @property {string} status - Current status of the section (e.g. "Open")
+ */
 
 /**
  * Fetches one course's sections for a given term and shapes the result
@@ -23,7 +31,13 @@ export async function fetchTerms() {
  * @param {string} courseNumber - course number, e.g. "110"
  * @param {number} termId - numeric term ID to fetch sections for
  * @param {number} colorIndex - index used to assign this course's palette color
- * @returns {Promise<Course>} a Course object with `components` grouped by type
+ * @returns {Promise<{ 
+ *   title: string, 
+ *   code: string, 
+ *   components: Object.<string, CourseSections[]>, 
+ *   color: string 
+ * }>} a Course object with `components` grouped by type. 
+ * E.g. `{ title: 'Symbolic Logic', code: 'PHIL_V 220', components: {Lecture: Array(4)}, color: '#3D7068' }`
  * @throws {Error} with a server-provided detail message if the fetch fails
  */
 export async function fetchCourse(dept, courseNumber, termId, colorIndex) {
@@ -36,16 +50,18 @@ export async function fetchCourse(dept, courseNumber, termId, colorIndex) {
     }
 
     const json = await res.json();
+    json.color = colorForIndex(colorIndex);
 
-    return {
-        code: `${dept} ${courseNumber}`,
-        title: json.title || `${dept} ${courseNumber}`,
-        color: colorForIndex(colorIndex),
-        components: json.sections,
-    };
+    return json;
 }
 
-// POST the bug report to the backend, which relays it via Resend
+/**
+ * Submits a bug report to the backend, which relays it via Resend.
+ * @param {string} email - Email address to contact
+ * @param {string} description - Description of the bug
+ * @returns {Promise<{ ok: true }>} Response from the backend
+ * @throws {Error} with a server-provided error message if the request fails
+ */
 export async function submitBugReport(email, description) {
     const res = await fetch(`${API_BASE}/api/bug-report`, {
         method: "POST",

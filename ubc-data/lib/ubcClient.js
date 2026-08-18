@@ -17,9 +17,18 @@ const INSTRUCTIONAL_METHOD = JSON.parse(readFileSync(instructional_methodPath, "
 const statusPath = fileURLToPath(new URL("../data/status.json", import.meta.url));
 const STATUS = JSON.parse(readFileSync(statusPath, "utf-8"));
 
+/** 
+ * @typedef {Object} CourseSections
+ * @property {string} label - Section number (e.g. "L10")
+ * @property {string[]} days - Days of the week the section meets (e.g. ["t", "th"])
+ * @property {number} start - Start time (minutes from midnight) (e.g. 570)
+ * @property {number} end - End time (minutes from midnight) (e.g. 660)
+ * @property {string} status - Current status of the section (e.g. "Open")
+ */
+
 /**
  * Returns all terms as an array from `data/terms.json`.
- * @returns {Array<{id: number, name: string}>} All available terms.
+ * @returns {{id: number, name: string}[]} All available terms.
  */
 export function getAvailableTerms() {
     return Object.entries(TERMS).map(([name, id]) => ({ id, name }));
@@ -45,12 +54,18 @@ function resolveSubjectId(dept) {
  * @param {string} dept - Subject code (e.g. "CPSC_V").
  * @param {string} course - Course number (e.g. "110").
  * @param {number} [termId] - Numeric term ID; defaults to the first entry in `data/terms.json`.
- * @returns {Promise<{LEC: Array, LAB: Array, TUT: Array}>} Sections grouped by component type produced by {@link parseSections}.
+ * @returns {{
+ *   title: string,
+ *   code: string,
+ *   components: Object.<string, CourseSections[]>
+ * }} Sections grouped by component type produced by {@link parseSections}. 
+ * E.g. `{ "title": "Computation, Programs, and Programming", "code": "CPSC_V 110", "components": {} }`
  * @throws {Error} If no term can be resolved, the subject code is unknown, or the upstream fetch fails.
  */
-export async function getCourseSections(dept, course, termId) {
+export async function getCourseInfo(dept, course, termId) {
     const resolvedTermId = termId ?? Object.values(TERMS)[0];
     if (!resolvedTermId) throw new Error("No term specified"); // data/terms.json empty
+
     const cacheKey = `sections-${dept}-${course}-${resolvedTermId}`;
     const cached = cacheGet(cacheKey);
     if (cached) return cached;
@@ -69,39 +84,45 @@ export async function getCourseSections(dept, course, termId) {
     const res = await fetch(url);
     if (!res.ok) throw new Error(`Section fetch failed: ${res.status}`);
     const json = await res.json();
+    if (json.data.length === 0) throw new Error(`Unknown course level for ${dept}: ${course}`);
 
-    const result = parseSections(json, dept, course);
+    const components = parseSections(json);
+    const code = `${dept} ${course}`;
+    const title = json.data[0].attributes.title.split("::")[0].trim();
+    const result = { title, code, components };
+
     cacheSet(cacheKey, result);
     return result;
 }
 
 /**
- * Transforms JSON:API `node/section` response into 
- * `{ LEC: [...], LAB: [...], TUT: [...] }`.
- *
+ * Transforms JSON:API `node/section` response into section data
  * @param {Object} json - Raw JSON:API response body from `node/section`.
- * @param {string} dept - Department code (e.g. "CPSC_V")
- * @param {string} course - Course number (e.g. "110")
- * @returns {{LEC: Array<object>, LAB: Array<object>, TUT: Array<object>}} Sections grouped by
- *   component type. Each section entry has the shape
- *   `{ id, label, days: string[], start: number, end: number, status: string }`.
+ * @returns {Object.<string, CourseSections[]>} Sections grouped by component type. 
  */
-function parseSections(json, dept, course) {
-    const includedById = new Map((json.included ?? []).map((item) => [item.id, item]));
-    const sections = { LEC: [], LAB: [], TUT: [] };
-    let code = `${dept} ${course}`;
-    let title = null;
+function parseSections(json) {
+    /* json example
+    {
+        jsonapi: { version: '1.1', meta: { links: [Object] } },
+        data: [
+                {
+                    type: 'node--section',
+                    id: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
+                    links: [Object],
+                    attributes: [Object],
+                    relationships: [Object]
+                },
+                {
+                    ...
+                }, ...
+    */
+    const sections = {};
 
     for (const section of json.data) {
         const attrs = section.attributes;
 
-        // Title comes back as "<Course name> :: <year> :: Sec <number>" —
-        if (!title && attrs.title) {
-            title = attrs.title.split("::")[0].trim();
-        }
-
         const entry = {
-            id: attrs.title,
+            // id: attrs.title,
             label: attrs.field_section_number,
             days: attrs.field_days ?? [],
             start: Math.round(attrs.field_start_time / 60), // seconds -> minutes

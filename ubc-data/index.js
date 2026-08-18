@@ -1,12 +1,12 @@
 import express from "express";
 import cors from "cors";
-import { getCourseSections, getAvailableTerms } from "./lib/ubcClient.js";
+import { getCourseInfo, getAvailableTerms } from "./lib/ubcClient.js";
 import { sendBugReportEmail } from "./lib/mailer.js";
 
 const app = express();
 
 app.use(cors({
-    origin: ['https://course-scheduler-app-alpha.vercel.app', 'https://ubcschedules.vercel.app', 'http://localhost:5173'],
+    origin: ['https://ubcschedules.vercel.app', 'http://localhost:5173'],
     credentials: true
 }));
 app.use(express.json());
@@ -15,7 +15,7 @@ app.use(express.json());
  * GET /api/terms
  * Returns the list of available terms for the term dropdown in the React app.
  * @route GET /api/terms
- * @returns {200} JSON body `{ terms: Array<{ id: number, name: string }> }`
+ * @returns {200} JSON body `{ terms: { id: number, name: string }[] }` (e.g. { "id": 1449, "name": "2025-26 Winter Term 1 (UBC-V)" })
  * @returns {502} JSON body `{ error: string, detail: string }` if the upstream fetch fails.
  */
 app.get("/api/terms", async (req, res) => {
@@ -35,7 +35,7 @@ app.get("/api/terms", async (req, res) => {
  * @param {string} req.params.dept - Subject code (e.g. "CPSC").
  * @param {string} req.params.course - Course number, (e.g. "110").
  * @param {string} [req.query.term] - Numeric term ID as a string (e.g. "1454").
- * @returns {200} JSON body `{ dept: string, course: string, sections: object }`
+ * @returns {200} JSON body `{ title: string, code: string, components: object }`
  * @returns {502} JSON body `{ error: string, detail: string }` if the upstream fetch fails.
  */
 app.get("/api/sections/:dept/:course", async (req, res) => {
@@ -43,8 +43,9 @@ app.get("/api/sections/:dept/:course", async (req, res) => {
     const termId = req.query.term ? Number(req.query.term) : undefined;
 
     try {
-        const sections = await getCourseSections(dept.toUpperCase(), course, termId);
-        res.json({ dept: dept.toUpperCase(), course, sections });
+        const sections = await getCourseInfo(dept.toUpperCase(), course, termId);
+        console.log(sections);
+        res.json(sections);
     } catch (err) {
         console.error(err);
         res.status(502).json({ error: "Failed to fetch course data", detail: err.message });
@@ -68,7 +69,7 @@ app.post("/api/bug-report", async (req, res) => {
     }
 
     try {
-        await sendBugReportEmail({ reporterEmail: email.trim(), description: description.trim() });
+        await sendBugReportEmail(email.trim(), description.trim());
         res.json({ ok: true });
     } catch (err) {
         console.error(err);

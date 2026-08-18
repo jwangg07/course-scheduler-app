@@ -16,6 +16,13 @@ export default function App() {
     const [selectedTermId, setSelectedTermId] = useState(null);
     const [currentTermName, setCurrentTermName] = useState(null);
     const [termsError, setTermsError] = useState(null);
+
+    // e.g. {
+    //          title: 'Symbolic Logic', 
+    //          code: 'PHIL_V 220', 
+    //          components: {Lecture: Array(4)}, 
+    //          color: '#3D7068'
+    //      }
     const [courses, setCourses] = useState([]);
     const [addStatus, setAddStatus] = useState({ loading: false, error: null });
     const [index, setIndex] = useState(0); // schedule view state
@@ -99,7 +106,7 @@ export default function App() {
             const courseSel = prev[courseCode] ?? {};
             // If we haven't touched this type before, start from "everything
             // allowed" (i.e. every id currently offered for that type)
-            const currentIds = courseSel[type] ?? new Set(course.components[type].map((o) => o.id));
+            const currentIds = courseSel[type] ?? new Set(course.components[type].map((o) => o.label));
             const nextIds = new Set(currentIds);
             if (nextIds.has(sectionId)) nextIds.delete(sectionId);
             else nextIds.add(sectionId);
@@ -133,20 +140,18 @@ export default function App() {
         const filtered = courses.map((c) => {
             const sel = sectionSelections[c.code]; // this course's overrides, if any
             const newComponents = {};
-            for (const [type, options] of Object.entries(c.components)) {
-                // course genuinely doesn't offer this component type — skip it,
-                // same as the old scheduler.js check used to
+            for (const [type, options] of Object.entries(c.components)) { // e.g. [type, options] === ["Lecture", Array(4)]
                 if (options.length === 0) continue;
 
                 const kept = options.filter((o) => {
                     const withinTime = o.days.length === 0 || (o.start >= startMin && o.end <= endMin);
                     const statusAllowed = !settings.excludedStatuses.includes(o.status);
                     // No entry for this type => user hasn't restricted it => allow all
-                    const sectionAllowed = !sel?.[type] || sel[type].has(o.id);
+                    const sectionAllowed = !sel?.[type] || sel[type].has(o.label);
                     return withinTime && statusAllowed && sectionAllowed;
                 });
 
-                newComponents[type] = kept; // may end up [] — that's meaningful now
+                newComponents[type] = kept; // may end up []
                 if (kept.length === 0) {
                     unavailable.push({ courseCode: c.code, type });
                 }

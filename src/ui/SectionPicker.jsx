@@ -93,7 +93,7 @@ export default function SectionPicker({ course, selection = {}, onToggle, onSele
 
                             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "4px 16px" }}>
                                 {options.map((opt) => {
-                                    const checked = !selectedIds || selectedIds.has(opt.id);
+                                    const checked = !selectedIds || selectedIds.has(opt.label);
                                     const timeLabel =
                                         opt.days.length === 0
                                             ? "Async / online"
@@ -101,14 +101,14 @@ export default function SectionPicker({ course, selection = {}, onToggle, onSele
 
                                     return (
                                         <label
-                                            key={opt.id}
+                                            key={opt.label}
                                             style={{ display: "flex", alignItems: "center", gap: "9px", fontSize: "13px", padding: "6px 4px", cursor: "pointer", borderRadius: "6px", background: STATUS_COLORS[opt.status] + "1e" }}
                                         >
                                             <input
                                                 type="checkbox"
                                                 className="cs-checkbox"
                                                 checked={checked}
-                                                onChange={() => onToggle(type, opt.id)}
+                                                onChange={() => onToggle(type, opt.label)}
                                             />
                                             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flex: "1" }}>
                                                 <div style={{ minWidth: 0 }}>
