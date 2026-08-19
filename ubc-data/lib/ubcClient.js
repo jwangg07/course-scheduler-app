@@ -18,7 +18,7 @@ const statusPath = fileURLToPath(new URL("../data/status.json", import.meta.url)
 const STATUS = JSON.parse(readFileSync(statusPath, "utf-8"));
 
 /** 
- * @typedef {Object} CourseSections
+ * @typedef {Object} CourseSection
  * @property {string} label - Section number (e.g. "L10")
  * @property {string[]} days - Days of the week the section meets (e.g. ["t", "th"])
  * @property {number} start - Start time (minutes from midnight) (e.g. 570)
@@ -57,7 +57,7 @@ function resolveSubjectId(dept) {
  * @returns {{
  *   title: string,
  *   code: string,
- *   components: Object.<string, CourseSections[]>
+ *   components: Object.<string, CourseSection[]>
  * }} Sections grouped by component type produced by {@link parseSections}. 
  * E.g. `{ "title": "Computation, Programs, and Programming", "code": "CPSC_V 110", "components": {} }`
  * @throws {Error} If no term can be resolved, the subject code is unknown, or the upstream fetch fails.
@@ -98,7 +98,7 @@ export async function getCourseInfo(dept, course, termId) {
 /**
  * Transforms JSON:API `node/section` response into section data
  * @param {Object} json - Raw JSON:API response body from `node/section`.
- * @returns {Object.<string, CourseSections[]>} Sections grouped by component type. 
+ * @returns {Object.<string, CourseSection[]>} Sections grouped by component type. 
  */
 function parseSections(json) {
     /* json example

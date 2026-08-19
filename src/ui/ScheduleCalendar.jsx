@@ -3,7 +3,7 @@ import { STATUS_COLORS } from "../util/status.js";
 import { COLORS } from "../util/theme.js";
 
 // Displays the schedule
-// schedule = [{courseCode, type, slot, color}]
+// schedule = [{code, type, slot, color}]
 export default function ScheduleCalendar({ schedule, settings }) {
     const hours = [];
     for (let m = DAY_START; m <= DAY_END; m += 60) hours.push(m);
@@ -37,7 +37,7 @@ export default function ScheduleCalendar({ schedule, settings }) {
                             height: "1px",
                             left: "0px",
                             right: "0px",
-                            background: COLORS.SECONDARY+"80"
+                            background: COLORS.SECONDARY + "80"
                         }} />
                         <span style={{
                             position: "absolute",
@@ -45,7 +45,7 @@ export default function ScheduleCalendar({ schedule, settings }) {
                             height: "1px",
                             left: "0px",
                             right: "0px",
-                            background: COLORS.SECONDARY+"80"
+                            background: COLORS.SECONDARY + "80"
                         }} />
                         {schedule
                             .filter((entry) => entry.slot.days.includes(day))
@@ -55,7 +55,7 @@ export default function ScheduleCalendar({ schedule, settings }) {
                                 return (
                                     <div
                                         key={i}
-                                        title={`${entry.courseCode} ${entry.type} ${entry.slot.label}`}
+                                        title={`${entry.code} ${entry.type} ${entry.slot.label}`}
                                         style={{
                                             position: "absolute",
                                             top: `${top}px`,
@@ -72,10 +72,10 @@ export default function ScheduleCalendar({ schedule, settings }) {
                                         }}
                                     >
                                         <div style={{ fontFamily: "'JetBrains Mono', monospace", fontWeight: 600, color: entry.color, fontSize: "10.5px" }}>
-                                            {entry.courseCode}
+                                            {entry.code}
                                         </div>
                                         <div style={{ color: entry.color, fontSize: "10.5px" }}>{entry.type} {entry.slot.label}</div>
-                                        <div style={{ display: "inline-flex", alignItems: "center", background: entry.color+"20", gap: "5px", marginTop: "3px", padding: "2px 5px 2px 5px", borderRadius: "10px"}}>
+                                        <div style={{ display: "inline-flex", alignItems: "center", background: entry.color + "20", gap: "5px", marginTop: "3px", padding: "2px 5px 2px 5px", borderRadius: "10px" }}>
                                             <span
                                                 style={{
                                                     width: "6px",

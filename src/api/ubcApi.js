@@ -9,6 +9,8 @@ const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3001";
  * @throws {Error} if the request fails (non-2xx response)
  */
 export async function fetchTerms() {
+    await new Promise((r) => setTimeout(r, 3000)); // TEMP: REMOVE
+
     const res = await fetch(`${API_BASE}/api/terms`);
     if (!res.ok) throw new Error(`Failed to load terms: ${res.status}`);
     const json = await res.json();
@@ -16,12 +18,11 @@ export async function fetchTerms() {
 }
 
 /** 
- * @typedef {Object} CourseSections
- * @property {string} label - Section number (e.g. "L10")
- * @property {string[]} days - Days of the week the section meets (e.g. ["t", "th"])
- * @property {number} start - Start time (minutes from midnight) (e.g. 570)
- * @property {number} end - End time (minutes from midnight) (e.g. 660)
- * @property {string} status - Current status of the section (e.g. "Open")
+ * @typedef {Object} Course
+ * @property {string} title - Title of course (e.g. "Symbolic Logic")
+ * @property {string} code - Course code (e.g. "PHIL_V 220")
+ * @property {string} color - Course color (e.g. "#3D7068")
+ * @property {Object.<string, import("../../ubc-data/lib/ubcClient.js").CourseSection[]>} components - 
  */
 
 /**
@@ -31,12 +32,7 @@ export async function fetchTerms() {
  * @param {string} courseNumber - course number, e.g. "110"
  * @param {number} termId - numeric term ID to fetch sections for
  * @param {number} colorIndex - index used to assign this course's palette color
- * @returns {Promise<{ 
- *   title: string, 
- *   code: string, 
- *   components: Object.<string, CourseSections[]>, 
- *   color: string 
- * }>} a Course object with `components` grouped by type. 
+ * @returns {Promise<Course>} a Course object with `components` grouped by type. 
  * E.g. `{ title: 'Symbolic Logic', code: 'PHIL_V 220', components: {Lecture: Array(4)}, color: '#3D7068' }`
  * @throws {Error} with a server-provided detail message if the fetch fails
  */

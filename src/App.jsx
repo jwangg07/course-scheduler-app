@@ -13,17 +13,9 @@ import { COLORS } from "./util/theme.js"
 export default function App() {
     const [campus, setCampus] = useState("Vancouver");
     const [terms, setTerms] = useState([]);
-    const [selectedTermId, setSelectedTermId] = useState(null);
-    const [currentTermName, setCurrentTermName] = useState(null);
+    const [selectedTerm, setSelectedTerm] = useState(null); // e.g. { id: 1449, name: "2025-26 Winter Term 1 (UBC-V)" }
     const [termsError, setTermsError] = useState(null);
-
-    // e.g. {
-    //          title: 'Symbolic Logic', 
-    //          code: 'PHIL_V 220', 
-    //          components: {Lecture: Array(4)}, 
-    //          color: '#3D7068'
-    //      }
-    const [courses, setCourses] = useState([]);
+    const [courses, setCourses] = useState([]); // E.g. { title: 'Symbolic Logic', code: 'PHIL_V 220', components: {Lecture: Array(4)}, color: '#3D7068' }[]
     const [addStatus, setAddStatus] = useState({ loading: false, error: null });
     const [index, setIndex] = useState(0); // schedule view state
     const [generated, setGenerated] = useState(null);
@@ -32,13 +24,10 @@ export default function App() {
 
     useEffect(() => {
         fetchTerms()
-            .then((list) => {
-                setTerms(list);
-                if (list.length > 0) {
-                    setSelectedTermId(list[0].id);
-                    setCurrentTermName(
-                        list[0].name.replace(/\s*\(UBC-[VO]\)$/, "")
-                    );
+            .then((termsList) => {
+                setTerms(termsList);
+                if (termsList.length > 0) {
+                    setSelectedTerm(termsList[0]);
                 }
             })
             .catch((err) => setTermsError(err.message));
@@ -54,14 +43,21 @@ export default function App() {
 
     const handleCampusChange = (campus) => {
         setCampus(campus);
-        handleTermChange(currentTermName, campus);
+        handleTermChange(selectedTerm.name, campus); // must pass campus manually because setCampus() is asynchronous
     }
 
-    const handleTermChange = (termName, campusName = campus) => { // termName: 2025-26 Winter Term 1
-        setCurrentTermName(termName);
-        campusName === "Vancouver" ? termName = `${termName} (UBC-V)` : termName = `${termName} (UBC-O)`;
-        const termId = terms.find(term => term.name === termName).id;
-        setSelectedTermId(termId);
+    /**
+     * Changes the term, accounting for current campus selection, and resets states
+     * @param {string} termName - Full name of the term (e.g. "2025-26 Winter Term 1 (UBC-V)")
+     * @param {string} [campusName] - Name of the campus (optional, used for {@link handleCampusChange})
+     */
+    const handleTermChange = (termName, campusName = campus) => {
+        campusName === "Vancouver" ?
+            termName = termName.replace("UBC-O", "UBC-V")
+            : termName = termName.replace("UBC-V", "UBC-O");
+
+        setSelectedTerm(terms.find(term => term.name === termName));
+
         setCourses([]);
         setSectionSelections({});
         setGenerated(null);
@@ -79,7 +75,7 @@ export default function App() {
 
         setAddStatus({ loading: true, error: null });
         try {
-            const course = await fetchCourse(dept, courseNumber, selectedTermId, courses.length);
+            const course = await fetchCourse(dept, courseNumber, selectedTerm.id, courses.length);
             setCourses((prev) => [...prev, course]);
             setGenerated(null); // any previously generated schedules no longer reflect the full course list
             setIndex(0);
@@ -165,7 +161,8 @@ export default function App() {
 
     const schedules = useMemo(() => {
         if (!generated) return [];
-        return generateSchedules(courses.map((c) => c.code), filteredCourses);
+        if (unavailableComponents.length > 0) return [];
+        else return generateSchedules(filteredCourses);
     }, [generated, filteredCourses, courses]);
 
     const current = schedules[index];
@@ -175,7 +172,7 @@ export default function App() {
             <>
                 <BugReport />
                 <div style={{ padding: "24px", color: COLORS.ERROR, fontFamily: "'Inter', system-ui, sans-serif" }}>
-                    Couldn't load terms from the backend ({termsError}). Is the server running on localhost:3001?
+                    Couldn't load terms from the backend ({termsError}).
                 </div>
             </>
         );
@@ -206,7 +203,6 @@ export default function App() {
                     campus={campus}
                     onCampusChange={handleCampusChange}
                     terms={displayTerms}
-                    selectedTermId={selectedTermId}
                     onTermChange={handleTermChange}
                     courses={courses}
                     onAddCourse={handleAddCourse}

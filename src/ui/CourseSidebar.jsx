@@ -8,7 +8,6 @@ export default function CourseSidebar({
     campus,
     onCampusChange,
     terms,
-    selectedTermId,
     onTermChange,
     courses,
     onAddCourse,
@@ -42,6 +41,12 @@ export default function CourseSidebar({
         setDept("");
         setCourseNumber("");
     };
+
+    const changeTerm = (termName) => {
+        campus === "Vancouver" ? termName = `${termName} (UBC-V)` : termName = `${termName} (UBC-O)`;
+        onTermChange(termName);
+    }
+
     return (
         <div style={{ width: "450px", background: COLORS.PRIMARY, color: COLORS.TEXT_LIGHT, padding: "24px 20px", flexShrink: 0 }}>
             <div style={{ fontFamily: "'Fraunces', serif", fontSize: "20px", fontWeight: 600, letterSpacing: "0.2px" }}>
@@ -75,7 +80,7 @@ export default function CourseSidebar({
                 onChange={(e) => {
                     setTerm(e.target.value);
                     setTermError(null); // clear any "please select a term" error once they pick one
-                    onTermChange(e.target.value);
+                    changeTerm(e.target.value);
                 }}
                 style={{
                     width: "100%",

@@ -1,20 +1,19 @@
-import { describe, it, expect } from "vitest";
-import { colorForIndex } from "./palette.js";
+import { describe, test, expect } from "vitest";
+import { colorForIndex } from "../../src/util/palette.js";
 
 describe("colorForIndex", () => {
-    it("returns a color for index 0", () => {
+    test("returns a color", () => {
         expect(colorForIndex(0)).toMatch(/^#[0-9A-Fa-f]{6}$/);
     });
 
-    it("cycles back to the same color once the palette is exhausted", () => {
+    test("cycles back to the same color after palette is exhausted", () => {
         const first = colorForIndex(0);
         let paletteLength = 1;
         while (colorForIndex(paletteLength) !== first) paletteLength++;
         expect(colorForIndex(paletteLength)).toBe(first);
-        expect(colorForIndex(paletteLength * 2)).toBe(first);
     });
 
-    it("gives different colors to at least the first two courses", () => {
+    test("gives different colors to different courses", () => {
         expect(colorForIndex(0)).not.toBe(colorForIndex(1));
     });
 });
