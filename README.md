@@ -23,7 +23,7 @@ Course data is pulled live from UBC's own [Drupal JSON:API](https://courses.stud
 | Testing  | Vitest                                                       
 | Email    | Resend (bug report)                                
 
-<!-- ## Getting started
+## Getting started
 
 ### Prerequisites
 - Node.js 18+
@@ -43,15 +43,15 @@ In a separate terminal, from the repo root:
 
 ```bash
 npm install
-cp .env.example .env    # defaults to http://localhost:3001, override if needed
+cp .env.example ubc-data/.env
 npm run dev              # http://localhost:5173
 ```
 
 ### Running tests
 
 ```bash
-npm test          # Vitest — scheduler conflict logic, time formatting, palette
-``` -->
+npm test
+```
 
 <!-- ## API
 
