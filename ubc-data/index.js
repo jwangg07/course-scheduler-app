@@ -2,8 +2,11 @@ import express from "express";
 import cors from "cors";
 import { getCourseInfo, getAvailableTerms } from "./lib/ubcClient.js";
 import { sendBugReportEmail } from "./lib/mailer.js";
+import { generalLimiter, bugReportLimiter, termsLimiter } from "./middleware/rateLimit.js";
 
 const app = express();
+
+app.set("trust proxy", 1);
 
 app.use(cors({
     origin: ['https://ubcschedules.vercel.app', 'http://localhost:5173'],
@@ -18,12 +21,11 @@ app.use(express.json());
  * @returns {200} JSON body `{ terms: { id: number, name: string }[] }` (e.g. { "id": 1449, "name": "2025-26 Winter Term 1 (UBC-V)" })
  * @returns {502} JSON body `{ error: string, detail: string }` if the upstream fetch fails.
  */
-app.get("/api/terms", async (req, res) => {
+app.get("/api/terms", termsLimiter, async (req, res) => {
     try {
         const terms = await getAvailableTerms();
         res.json({ terms });
     } catch (err) {
-        console.error(err);
         res.status(502).json({ error: "Failed to fetch terms", detail: err.message });
     }
 });
@@ -38,13 +40,12 @@ app.get("/api/terms", async (req, res) => {
  * @returns {200} JSON body `{ title: string, code: string, components: object }`
  * @returns {502} JSON body `{ error: string, detail: string }` if the upstream fetch fails.
  */
-app.get("/api/sections/:dept/:course", async (req, res) => {
+app.get("/api/sections/:dept/:course", generalLimiter, async (req, res) => {
     const { dept, course } = req.params;
     const termId = req.query.term ? Number(req.query.term) : undefined;
 
     try {
         const sections = await getCourseInfo(dept.toUpperCase(), course, termId);
-        console.log(sections);
         res.json(sections);
     } catch (err) {
         console.error(err);
@@ -55,7 +56,7 @@ app.get("/api/sections/:dept/:course", async (req, res) => {
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 // POST /api/bug-report  { email, description } -> { ok: true }
-app.post("/api/bug-report", async (req, res) => {
+app.post("/api/bug-report", bugReportLimiter, async (req, res) => {
     const { email, description } = req.body ?? {};
 
     if (!email || !EMAIL_RE.test(email)) {

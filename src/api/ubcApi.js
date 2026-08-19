@@ -9,10 +9,11 @@ const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3001";
  * @throws {Error} if the request fails (non-2xx response)
  */
 export async function fetchTerms() {
-    await new Promise((r) => setTimeout(r, 3000)); // TEMP: REMOVE
-
     const res = await fetch(`${API_BASE}/api/terms`);
-    if (!res.ok) throw new Error(`Failed to load terms: ${res.status}`);
+    if (!res.ok) {
+        if (res.status === 429) throw new Error("Too many requests received. Please try again later or submit a bug report.");
+        throw new Error(`Failed to load terms: ${res.status}`);
+    }
     const json = await res.json();
     return json.terms;
 }
@@ -41,6 +42,7 @@ export async function fetchCourse(dept, courseNumber, termId, colorIndex) {
     const res = await fetch(url);
 
     if (!res.ok) {
+        if (res.status === 429) throw new Error("Too many requests received. Please try again later or submit a bug report.");
         const body = await res.json().catch(() => ({}));
         throw new Error(body.detail || `Failed to load ${dept} ${courseNumber} (${res.status})`);
     }
@@ -66,6 +68,7 @@ export async function submitBugReport(email, description) {
     });
 
     if (!res.ok) {
+        if (res.status === 429) throw new Error("Too many requests received. Please try again later.");
         const body = await res.json().catch(() => ({}));
         throw new Error(body.error || body.detail || `Failed to send bug report (${res.status})`);
     }
