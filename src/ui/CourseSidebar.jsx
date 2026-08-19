@@ -89,7 +89,7 @@ export default function CourseSidebar({
                     borderRadius: "8px",
                     border: `1px solid ${COLORS.PRIMARY_DARK_ACCENT}`,
                     background: COLORS.PRIMARY_DARK,
-                    color: COLORS.TEXT_LIGHT,
+                    color: term ? COLORS.TEXT_LIGHT : COLORS.TEXT_MEDIUM,
                     fontSize: "13px",
                 }}
             >
