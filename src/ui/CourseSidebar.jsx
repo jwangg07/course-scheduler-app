@@ -2,7 +2,7 @@ import { useState } from "react";
 import ScheduleSettings from "./ScheduleSettings.jsx";
 import SectionPicker from "./SectionPicker.jsx";
 import { COLORS } from "./../util/theme.js";
-import { X, ArrowRight } from "lucide-react";
+import { X, ArrowRight, Settings } from "lucide-react";
 
 export default function CourseSidebar({
     campus,
@@ -155,7 +155,7 @@ export default function CourseSidebar({
                         </div>
 
                         {/* Hidden until hover; see the .cs-select-hint rule in index.css */}
-                        <div className="cs-select-hint" style={{ color: COLORS.SECONDARY }}>SELECT SECTIONS</div>
+                        <div className="cs-select-hint" style={{ color: COLORS.TEXT_DARK, fontWeight: 600 }}>SELECT SECTIONS</div>
 
                         <button
                             onClick={(e) => {
@@ -166,8 +166,9 @@ export default function CourseSidebar({
                                 onRemoveCourse(c.code);
                             }}
                             aria-label={`Remove ${c.code}`}
-                            style={{ background: "none", border: "none", color: COLORS.TEXT_LIGHT, cursor: "pointer", fontSize: "16px", lineHeight: 1, padding: "4px", position: "relative", zIndex: 1 }}
+                            style={{ background: "none", border: "none", color: COLORS.TEXT_LIGHT, cursor: "pointer", fontSize: "16px", lineHeight: 1, padding: "4px", position: "relative", zIndex: 1, display: "flex", alignItems: "center", gap: "8px" }}
                         >
+                            <Settings className="course-settings-button" size={12} strokeWidth={3} />
                             <X className="course-remove-button" size={12} strokeWidth={3} />
                         </button>
                     </div>

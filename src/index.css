@@ -99,6 +99,14 @@ body {
   transition: color 0.15s ease;
 }
 
+.course-settings-button {
+  transition: opacity 0.15s ease;
+}
+
+.cs-course-row:hover .course-settings-button {
+  opacity: 0;
+}
+
 .cs-course-row:hover .course-remove-button {
   color: var(--TEXT_DARK);
 }

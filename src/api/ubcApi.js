@@ -9,6 +9,8 @@ const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3001";
  * @throws {Error} if the request fails (non-2xx response)
  */
 export async function fetchTerms() {
+    await new Promise((r) => setTimeout(r, 3000)); // TEMP: REMOVE
+
     const res = await fetch(`${API_BASE}/api/terms`);
     if (!res.ok) {
         if (res.status === 429) throw new Error("Too many requests received. Please try again later or submit a bug report.");
