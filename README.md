@@ -32,7 +32,8 @@ Course data is pulled live from UBC's own [Drupal JSON:API](https://courses.stud
 ### 1. Backend
 
 ```bash
-cd ubc-data
+cp .env.example server/.env     # fill in RESEND_API_KEY and TO_EMAIL
+cd server
 npm install
 npm run dev       # http://localhost:3001
 ```
@@ -42,14 +43,15 @@ npm run dev       # http://localhost:3001
 In a separate terminal, from the repo root:
 
 ```bash
+cd client
 npm install
-cp .env.example ubc-data/.env
 npm run dev              # http://localhost:5173
 ```
 
 ### Running tests
 
 ```bash
+cd client
 npm test
 ```
 
