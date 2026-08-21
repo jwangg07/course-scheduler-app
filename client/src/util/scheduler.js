@@ -1,8 +1,17 @@
+/** 
+ * @typedef {Object} CourseSection
+ * @property {string} label - Section number (e.g. "L10")
+ * @property {string[]} days - Days of the week the section meets (e.g. ["t", "th"])
+ * @property {number} start - Start time (minutes from midnight) (e.g. 570)
+ * @property {number} end - End time (minutes from midnight) (e.g. 660)
+ * @property {string} status - Current status of the section (e.g. "Open")
+ */
+
 /**
  * Checks whether two time slots conflict: share at least one
  * weekday AND [start, end) ranges must overlap.
- * @param {import("../../ubc-data/lib/ubcClient").CourseSection} a - first slot's info
- * @param {import("../../ubc-data/lib/ubcClient").CourseSection} b - second slot's info
+ * @param {CourseSection} a - first slot's info
+ * @param {CourseSection} b - second slot's info
  * @returns {boolean} true if the two slots collide
  */
 export function overlaps(a, b) {
@@ -15,7 +24,7 @@ export function overlaps(a, b) {
  * @typedef {Object} ComponentGroup
  * @property {string} code - Course code (e.g. "CPSC_V 110")
  * @property {string} type - Type of course section (e.g. "Lecture")
- * @property {import("../../ubc-data/lib/ubcClient").CourseSection[]} options - list of options for this course & section type pair
+ * @property {CourseSection[]} options - list of options for this course & section type pair
  * @property {string} color - Color of course (e.g. "#3D7068")
  */
 
@@ -41,7 +50,7 @@ function buildGroups(courseList) {
  * @property {string} code - The course this entry belongs to, (e.g. "CPSC_V 110")
  * @property {string} type - Component type, (e.g. "Lecture")
  * @property {string} color - Course color (e.g. "#3D7068")
- * @property {import("../../ubc-data/lib/ubcClient").CourseSection} slot - 
+ * @property {CourseSection} slot - 
  */
 
 /**
@@ -86,6 +95,5 @@ export function generateSchedules(filteredCourses, cap = 100) {
         }
     }
     backtrack([]);
-    console.log(results);
     return results;
 }

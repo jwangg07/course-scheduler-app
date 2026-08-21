@@ -25,7 +25,7 @@ export async function fetchTerms() {
  * @property {string} title - Title of course (e.g. "Symbolic Logic")
  * @property {string} code - Course code (e.g. "PHIL_V 220")
  * @property {string} color - Course color (e.g. "#3D7068")
- * @property {Object.<string, import("../../ubc-data/lib/ubcClient.js").CourseSection[]>} components - 
+ * @property {Object.<string, import("../util/scheduler.js").CourseSection[]>} components - 
  */
 
 /**
