@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="./favicon.ico">
+    <title>Privacy Policy — UBCSchedules</title>
+    <style>
+        :root {
+            --TEXT_DARK: #002145;
+            --TEXT_MEDIUM: #5A6B7A;
+            --ACCENT: #dce2e7;
+            --BACKGROUND: #F4F6F8;
+            --SECONDARY: #F2A900;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--BACKGROUND);
+            color: var(--TEXT_DARK);
+            font-family: 'Inter', system-ui, sans-serif;
+            line-height: 1.6;
+        }
+
+        .wrap {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 48px 24px 80px;
+        }
+
+        a {
+            color: var(--TEXT_DARK);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 24px;
+            font-size: 13px;
+            color: var(--TEXT_MEDIUM);
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        h1 {
+            font-family: 'Fraunces', serif;
+            font-size: 28px;
+            margin-bottom: 4px;
+        }
+
+        .updated {
+            font-size: 12.5px;
+            color: var(--TEXT_MEDIUM);
+            margin-bottom: 32px;
+        }
+
+        h2 {
+            font-family: 'Fraunces', serif;
+            font-size: 18px;
+            margin-top: 36px;
+            border-bottom: 1px solid var(--ACCENT);
+            padding-bottom: 6px;
+        }
+
+        p,
+        li {
+            font-size: 14.5px;
+            color: var(--TEXT_DARK);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+            font-size: 13.5px;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 8px 10px;
+            border: 1px solid var(--ACCENT);
+        }
+
+        th {
+            background: #fff;
+        }
+
+        code {
+            background: #fff;
+            border: 1px solid var(--ACCENT);
+            border-radius: 4px;
+            padding: 1px 5px;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <a class="back-link" href="./">&larr; Back to UBCSchedules</a>
+        <h1>Privacy Policy</h1>
+        <div class="updated">Last updated: August 21, 2026</div>
+
+        <p>UBCSchedules ("the app," "we," "our") is a free tool that helps UBC students build conflict free course
+            schedules. This page explains what data is collected when you use the app and why.</p>
+
+        <h2>Summary</h2>
+        <p>UBCSchedules does not require an account, does not sell data, and does not store your course selections on
+            our servers. The only data collected is (1) information you voluntarily submit through the bug report form.
+        </p>
+
+        <h2>1. Course Data & Schedule Generation</h2>
+        <p>When you search for or add a course, your request is sent to our backend (hosted on <strong>Render</strong>),
+            which queries UBC's own public
+            <a href="https://courses.students.ubc.ca/jsonapi" target="_blank" rel="noopener noreferrer">Drupal
+                JSON:API</a> for section data (times, instructional method, enrollment status, etc.).
+        </p>
+        <ul>
+            <li>We cache this course/section data temporarily (server-side, in memory) to reduce load on UBC's servers.
+                This cache contains only public course information.</li>
+            <li>Your generated schedules are computed <strong>entirely in your browser</strong> and are not sent to or
+                stored on our servers.</li>
+            <li>We do not currently persist your selected courses or schedules between visits (no accounts, no
+                server-side saving, no browser storage of your selections).</li>
+        </ul>
+
+        <h2>2. Bug Reports</h2>
+        <p>If you choose to submit a bug report, you'll provide:</p>
+        <ul>
+            <li>Your email address</li>
+            <li>A description of the issue</li>
+        </ul>
+        <p>This information is sent via <strong>Resend</strong>, a transactional email service, directly to the project
+            maintainer's inbox, so we can follow up if needed. It is used only for the purpose of investigating and
+            responding to the
+            reported issue and is not used for marketing or shared with third parties beyond Resend acting as our
+            email-delivery provider. See <a href="https://resend.com/legal/privacy-policy" target="_blank"
+                rel="noopener noreferrer">Resend's Privacy Policy</a> for how they process this data in transit.</p>
+        <p>Submitting a bug report is entirely optional, nothing is collected unless you fill out and submit the
+            form.</p>
+
+        <h2>3. Rate Limiting</h2>
+        <p>To keep the app available and prevent abuse, our backend applies rate limiting based on IP
+            address (via Express middleware). IP addresses are used transiently for this purpose only and are not logged
+            or stored beyond what's needed to enforce request limits.</p>
+
+        <h2>4. Third-Party Services We Use</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Service</th>
+                    <th>Purpose</th>
+                    <th>Data involved</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Render</td>
+                    <td>Backend hosting</td>
+                    <td>IP address (rate limiting only), no personal data stored</td>
+                </tr>
+                <tr>
+                    <td>UBC Drupal JSON:API</td>
+                    <td>Source of course/section data</td>
+                    <td>No personal data sent; public course queries only</td>
+                </tr>
+                <tr>
+                    <td>Resend</td>
+                    <td>Sends bug report emails</td>
+                    <td>Email address + message you provide, only if you submit a report</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>5. Changes to This Policy</h2>
+        <p>We may update this policy as the app changes (e.g. if we add accounts, saved schedules, or new analytics).
+            The "Last updated" date at the top will reflect the most recent revision.</p>
+
+        <h2>6. Contact</h2>
+        <p>Questions about this policy or your data can be sent through the in-app bug report form, or via the
+            project's GitHub repository.</p>
+    </div>
+</body>
+
+</html>

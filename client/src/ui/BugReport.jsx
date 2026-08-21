@@ -78,7 +78,7 @@ export default function BugReport() {
                             borderRadius: "14px",
                             border: `1px solid ${COLORS.ACCENT}`,
                             boxShadow: "0 20px 60px rgba(0,0,0,0.35)",
-                            padding: "24px 26px",
+                            padding: "24px 26px 14px 26px",
                         }}
                     >
                         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
@@ -149,6 +149,28 @@ export default function BugReport() {
                                 </button>
                             </form>
                         )}
+
+                        <div
+                            style={{
+                                marginTop: "14px",
+                                paddingTop: "8px",
+                                borderTop: `1px solid ${COLORS.ACCENT}`,
+                                textAlign: "center",
+                            }}
+                        >
+                            <a
+                                href="/privacy.html"
+                                target="_self"
+                                rel="noopener noreferrer"
+                                style={{
+                                    fontSize: "10.5px",
+                                    color: COLORS.TEXT_MEDIUM,
+                                    textDecoration: "underline",
+                                }}
+                            >
+                                Privacy Policy
+                            </a>
+                        </div>
                     </div>
                 </div>
             )}
