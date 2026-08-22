@@ -10,6 +10,10 @@ import SkeletonLoader from "./ui/SkeletonLoader.jsx";
 import BugReport from "./ui/BugReport.jsx";
 import { COLORS } from "./util/theme.js"
 
+/**
+ * Renders the course scheduler application.
+ * @returns {JSX.Element}
+ */
 export default function App() {
     const [campus, setCampus] = useState("Vancouver");
     const [terms, setTerms] = useState([]);
@@ -41,15 +45,19 @@ export default function App() {
         )
     ];
 
+    /**
+     * Changes the campus and updates the selected term.
+     * @param {string} campus - The campus to select (e.g. "Vancouver" or "Okanagan").
+     */
     const handleCampusChange = (campus) => {
         setCampus(campus);
         handleTermChange(selectedTerm.name, campus); // must pass campus manually because setCampus() is asynchronous
     }
 
     /**
-     * Changes the term, accounting for current campus selection, and resets states
-     * @param {string} termName - Full name of the term (e.g. "2025-26 Winter Term 1 (UBC-V)")
-     * @param {string} [campusName] - Name of the campus (optional, used for {@link handleCampusChange})
+     * Changes the term, accounting for current campus selection, and resets states.
+        * @param {string} termName - Full name of the term (e.g. "2025-26 Winter Term 1 (UBC-V)").
+        * @param {string} [campusName] - Name of the campus (optional, used for {@link handleCampusChange}).
      */
     const handleTermChange = (termName, campusName = campus) => {
         campusName === "Vancouver" ?
@@ -65,6 +73,11 @@ export default function App() {
         setAddStatus({ loading: false, error: null });
     };
 
+    /**
+     * Adds a course for the selected campus and term.
+     * @param {string} dept - The course subject code (e.g. "CPSC").
+     * @param {string} courseNumber - The course number (e.g. "110").
+     */
     const handleAddCourse = async (dept, courseNumber) => {
         campus === "Vancouver" ? dept = (`${dept}_V`) : dept = (`${dept}_O`);
         const code = `${dept} ${courseNumber}`;
@@ -85,6 +98,10 @@ export default function App() {
         }
     };
 
+    /**
+     * Removes a course from the scheduler.
+     * @param {string} code - The course code to remove (e.g. "CPSC_V 110").
+     */
     const handleRemoveCourse = (code) => {
         setCourses((prev) => prev.filter((c) => c.code !== code));
         setSectionSelections((prev) => { // Drop course's section overrides too
@@ -95,6 +112,12 @@ export default function App() {
         setIndex(0);
     };
 
+    /**
+     * Toggles one section for a course component type.
+     * @param {string} courseCode - The course code (e.g. "CPSC_V 110").
+     * @param {string} type - The component type (e.g. "Lecture").
+     * @param {string} sectionId - The section label to toggle (e.g. "L1A").
+     */
     // Toggle one specific section on/off for a course/type
     const handleToggleSection = (courseCode, type, sectionId) => {
         setSectionSelections((prev) => {
@@ -110,8 +133,11 @@ export default function App() {
         });
     };
 
-    // "All" button — clear the override entirely so it goes back to
-    // "everything allowed" rather than storing a full set of every id
+    /**
+     * Selects all sections of a course of a particular type in SectionPicker.
+     * @param {string} courseCode - The course code (e.g. "CPSC_V 110").
+     * @param {string} type - The component type (e.g. "Lecture").
+     */
     const handleSelectAllSections = (courseCode, type) => {
         setSectionSelections((prev) => {
             const courseSel = prev[courseCode] ?? {};
@@ -120,6 +146,11 @@ export default function App() {
         });
     };
 
+    /**
+     * Sets a course component override to allow no sections.
+     * @param {string} courseCode - The course code.
+     * @param {string} type - The component type.
+     */
     // "None" button — an empty Set means zero sections of this type allowed
     const handleSelectNoSections = (courseCode, type) => {
         setSectionSelections((prev) => {

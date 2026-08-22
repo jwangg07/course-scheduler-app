@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { submitBugReport } from "../api/ubcApi.js";
-import { Bug, FileX } from "lucide-react";
+import { Bug, X } from "lucide-react";
 import { COLORS } from "../util/theme.js";
-import { X } from "lucide-react";
 
 const INITIAL_FORM = { email: "", description: "" };
 

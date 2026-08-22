@@ -111,6 +111,10 @@ body {
     color: var(--TEXT_DARK);
 }
 
+.course-row:hover .course-remove-button:hover {
+    color: var(--SECONDARY);
+}
+
 /* Skeleton blocks */
 @keyframes skeleton-shimmer {
     0% {

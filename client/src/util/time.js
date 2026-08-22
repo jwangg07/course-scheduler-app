@@ -27,4 +27,4 @@ export function fmtTime(mins) {
 
 export const DAY_START = t("08:00");
 export const DAY_END = t("20:00");
-export const PX_PER_MIN = 1.1;
+export const PX_PER_MIN = 0.97;

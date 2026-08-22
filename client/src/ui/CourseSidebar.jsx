@@ -2,7 +2,7 @@ import { useState } from "react";
 import ScheduleSettings from "./ScheduleSettings.jsx";
 import SectionPicker from "./SectionPicker.jsx";
 import { COLORS } from "./../util/theme.js";
-import { X, ArrowRight, Settings } from "lucide-react";
+import { X, Settings } from "lucide-react";
 
 export default function CourseSidebar({
     campus,
@@ -150,7 +150,7 @@ export default function CourseSidebar({
                             <span style={{ width: "9px", height: "9px", borderRadius: "3px", background: c.color, display: "inline-block", flexShrink: 0 }} />
                             <div style={{ minWidth: 0 }}>
                                 <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "13px", fontWeight: 500 }}>{c.code}</div>
-                                {/* <div style={{ fontSize: "11.5px", color: COLORS.PRIMARY_LIGHT, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.title}</div> */}
+                                <div style={{ fontSize: "11.5px", color: COLORS.PRIMARY_LIGHT, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.title}</div>
                             </div>
                         </div>
 

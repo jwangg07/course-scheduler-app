@@ -58,9 +58,9 @@ export default function SectionPicker({ course, selection = {}, onToggle, onSele
                         <div style={{ fontFamily: "'JetBrains Mono', monospace", fontWeight: 600, fontSize: "16px" }}>
                             {course.code}
                         </div>
-                        {/* <div style={{ fontSize: "12.5px", color: "#5A6B7A", marginTop: "2px" }}>
+                        <div style={{ fontSize: "12.5px", color: "#5A6B7A", marginTop: "2px" }}>
                             {course.title}
-                        </div> */}
+                        </div>
                     </div>
                     <button
                         onClick={onClose}
