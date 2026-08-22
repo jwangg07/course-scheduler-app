@@ -1,6 +1,6 @@
 import { DAY_START, DAY_END, fmtTime } from "../util/time.js";
 import { FILTER_STATUSES, STATUS_COLORS } from "../util/status.js";
-import {COLORS} from "../util/theme.js";
+import { COLORS } from "../util/theme.js";
 
 // Hour options between the calendar's visible window
 const HOUR_OPTIONS = [];
@@ -55,7 +55,7 @@ export default function ScheduleSettings({ settings, onSettingsChange }) {
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                 <select
-                    className="cs-select"
+                    className="select"
                     value={settings.startHour}
                     onChange={handleStartChange}
                     style={selectStyle}
@@ -66,7 +66,7 @@ export default function ScheduleSettings({ settings, onSettingsChange }) {
                 </select>
                 <span style={{ color: COLORS.PRIMARY_LIGHT, fontSize: "12px" }}>to</span>
                 <select
-                    className="cs-select"
+                    className="select"
                     value={settings.endHour}
                     onChange={handleEndChange}
                     style={selectStyle}
@@ -89,7 +89,7 @@ export default function ScheduleSettings({ settings, onSettingsChange }) {
                     >
                         <input
                             type="checkbox"
-                            className="cs-checkbox"
+                            className="checkbox"
                             checked={settings.excludedStatuses.includes(status)}
                             onChange={() => handleStatusToggle(status)}
                         />

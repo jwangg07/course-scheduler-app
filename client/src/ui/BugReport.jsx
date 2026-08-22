@@ -37,7 +37,7 @@ export default function BugReport() {
         <>
             <button
                 onClick={() => setOpen(true)}
-                className="cs-btn"
+                className="btn"
                 style={{
                     position: "absolute",
                     display: "flex",
@@ -130,7 +130,7 @@ export default function BugReport() {
 
                                 <button
                                     type="submit"
-                                    className="cs-btn"
+                                    className="btn"
                                     disabled={status.loading}
                                     style={{
                                         marginTop: "18px",

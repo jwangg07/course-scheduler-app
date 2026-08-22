@@ -61,7 +61,7 @@ export default function CourseSidebar({
                 Campus
             </div>
             <select
-                className="cs-select"
+                className="select"
                 value={campus}
                 onChange={(e) => onCampusChange(e.target.value)}
                 style={{ width: "100%", marginBottom: "20px", padding: "8px 10px", borderRadius: "8px", border: `1px solid ${COLORS.PRIMARY_DARK_ACCENT}`, background: COLORS.PRIMARY_DARK, color: COLORS.TEXT_LIGHT, fontSize: "13px" }}
@@ -75,7 +75,7 @@ export default function CourseSidebar({
                 Term
             </div>
             <select
-                className="cs-select"
+                className="select"
                 value={term ?? ""}
                 onChange={(e) => {
                     setTerm(e.target.value);
@@ -118,7 +118,7 @@ export default function CourseSidebar({
                 />
                 <button
                     type="submit"
-                    className="cs-btn"
+                    className="btn"
                     disabled={addStatus.loading}
                     style={{ padding: "8px 12px", borderRadius: "8px", border: "none", background: COLORS.SECONDARY, color: COLORS.TEXT_DARK, fontWeight: 600, fontSize: "13px", cursor: addStatus.loading ? "wait" : "pointer" }}
                 >
@@ -141,12 +141,12 @@ export default function CourseSidebar({
                 {courses.map((c) => (
                     <div
                         key={c.code}
-                        className="cs-course-row"
+                        className="course-row"
                         onClick={() => setOpenPickerFor(c.code)}
                         style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "9px 8px", borderRadius: "8px", marginBottom: "2px" }}
                     >
                         {/* Fades out on hover so "Select sections" can fade in over it */}
-                        <div className="cs-course-info" style={{ display: "flex", alignItems: "center", gap: "7px", minWidth: 0 }}>
+                        <div className="course-info" style={{ display: "flex", alignItems: "center", gap: "7px", minWidth: 0 }}>
                             <span style={{ width: "9px", height: "9px", borderRadius: "3px", background: c.color, display: "inline-block", flexShrink: 0 }} />
                             <div style={{ minWidth: 0 }}>
                                 <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "13px", fontWeight: 500 }}>{c.code}</div>
@@ -154,8 +154,8 @@ export default function CourseSidebar({
                             </div>
                         </div>
 
-                        {/* Hidden until hover; see the .cs-select-hint rule in index.css */}
-                        <div className="cs-select-hint" style={{ color: COLORS.TEXT_DARK, fontWeight: 600 }}>SELECT SECTIONS</div>
+                        {/* Hidden until hover; see the .select-hint rule in index.css */}
+                        <div className="select-hint" style={{ color: COLORS.TEXT_DARK, fontWeight: 600 }}>SELECT SECTIONS</div>
 
                         <button
                             onClick={(e) => {
@@ -187,7 +187,7 @@ export default function CourseSidebar({
             )}
 
             <button
-                className="cs-btn"
+                className="btn"
                 onClick={onGenerate}
                 disabled={courses.length === 0}
                 style={{

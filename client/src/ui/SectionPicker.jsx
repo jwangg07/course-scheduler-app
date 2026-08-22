@@ -106,7 +106,7 @@ export default function SectionPicker({ course, selection = {}, onToggle, onSele
                                         >
                                             <input
                                                 type="checkbox"
-                                                className="cs-checkbox"
+                                                className="checkbox"
                                                 checked={checked}
                                                 onChange={() => onToggle(type, opt.label)}
                                             />
